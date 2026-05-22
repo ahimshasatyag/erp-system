@@ -155,7 +155,7 @@ export default function Sidebar({ isOpen, onClose, isCollapsed }: SidebarProps) 
 
                   {/* Submenu links */}
                   {isGroupOpen && !isCollapsed && (
-                    <div className="mt-1 ml-6 pl-2 border-l border-gray-250/70 dark:border-gray-700 space-y-1 animate-in fade-in slide-in-from-top-1 duration-150">
+                    <div className="mt-1 ml-6 pl-2 border-l border-gray-100 dark:border-gray-700 space-y-1 animate-in fade-in slide-in-from-top-1 duration-150">
                       {item.submenu?.map((sub, idx) => {
                         const isSubActive = sub.path === currentPath
                         return (
@@ -165,7 +165,7 @@ export default function Sidebar({ isOpen, onClose, isCollapsed }: SidebarProps) 
                             className={`block px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-150 ${
                               isSubActive
                                 ? 'text-[var(--primary)] bg-gray-100 font-bold dark:text-[var(--primary-container)] dark:bg-gray-800'
-                                : 'text-gray-550 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800/40'
+                                : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800/40'
                             }`}
                           >
                             {sub.title}
@@ -213,7 +213,7 @@ export default function Sidebar({ isOpen, onClose, isCollapsed }: SidebarProps) 
         } ${isCollapsed ? 'w-16' : 'w-60'}`}
       >
         {/* Brand Logo Header (Fixed at top of Sidebar) */}
-        <div className="h-16 border-b border-gray-150 dark:border-[#2e303a] flex items-center justify-center md:justify-start px-4 shrink-0 overflow-hidden">
+        <div className="h-16 border-b border-gray-100 dark:border-[#2e303a] flex items-center justify-center md:justify-start px-4 shrink-0 overflow-hidden">
           <a href="/" className="flex items-center gap-2 font-sans">
             <div className="flex flex-col items-start leading-none">
               <span className="font-extrabold text-[22px] tracking-tight text-[var(--primary)] animate-pulse">
@@ -235,7 +235,7 @@ export default function Sidebar({ isOpen, onClose, isCollapsed }: SidebarProps) 
 
         {/* Footer info/System indicators inside Sidebar */}
         {!isCollapsed && (
-          <div className="p-4 border-t border-gray-150 dark:border-[#2e303a] bg-gray-50 dark:bg-[#1f2028]/10 text-center text-[10px] text-gray-400 dark:text-gray-500">
+          <div className="p-4 border-t border-gray-100 dark:border-[#2e303a] bg-gray-50 dark:bg-[#1f2028]/10 text-center text-[10px] text-gray-400 dark:text-gray-500">
             <p>System Version: 2.1.0-RC</p>
             <p className="mt-0.5">DB Status: Connected</p>
           </div>
