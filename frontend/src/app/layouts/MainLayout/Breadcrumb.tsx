@@ -71,7 +71,7 @@ export default function Breadcrumb() {
   const breadcrumbs = getBreadcrumbs(path)
 
   return (
-    <nav className="hidden sm:flex items-center space-x-1.5 text-xs font-semibold text-gray-500 dark:text-gray-400">
+    <nav className="hidden sm:flex items-center space-x-1.5 text-xs font-semibold text-gray-400 dark:text-gray-400">
       {breadcrumbs.map((step, index) => {
         const isLast = index === breadcrumbs.length - 1
 
@@ -79,7 +79,7 @@ export default function Breadcrumb() {
           <div key={index} className="flex items-center space-x-1.5">
             {index > 0 && (
               <svg
-                className="w-3 h-3 text-gray-300 dark:text-gray-600 shrink-0"
+                className="w-3 h-3 text-gray-600 dark:text-gray-600 shrink-0"
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -93,13 +93,13 @@ export default function Breadcrumb() {
             )}
 
             {isLast ? (
-              <span className="text-gray-800 dark:text-gray-200 truncate max-w-[150px]">
+              <span className="text-white dark:text-gray-200 truncate max-w-[150px]">
                 {step.label}
               </span>
             ) : (
               <Link
                 to={step.path || '#'}
-                className="hover:text-[var(--primary)] dark:hover:text-rose-400 transition-colors flex items-center gap-1"
+                className="hover:text-white dark:hover:text-rose-400 transition-colors flex items-center gap-1"
               >
                 {step.label === 'Home' && (
                   <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

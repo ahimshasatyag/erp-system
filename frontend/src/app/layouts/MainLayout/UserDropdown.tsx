@@ -48,14 +48,14 @@ export default function UserDropdown() {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-gray-100 dark:hover:bg-[#2e303a] transition-all duration-200 outline-none cursor-pointer"
+        className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-gray-800 dark:hover:bg-[#2e303a] transition-all duration-200 outline-none cursor-pointer"
       >
         {/* Avatar Photo */}
         {user?.link_foto ? (
           <img
             src={`/assets/images/users/${user.link_foto}`}
             alt={user.name || 'User'}
-            className="w-8 h-8 rounded-full object-cover ring-2 ring-gray-100 dark:ring-[#2e303a]"
+            className="w-8 h-8 rounded-full object-cover ring-2 ring-gray-800 dark:ring-[#2e303a]"
             onError={(e) => {
               (e.target as HTMLElement).style.display = 'none';
               const parent = (e.target as HTMLElement).parentElement;
@@ -73,7 +73,7 @@ export default function UserDropdown() {
         </div>
 
         {/* Display Name */}
-        <span className="hidden md:inline-block text-sm font-semibold text-gray-700 dark:text-gray-300 pr-1">
+        <span className="hidden md:inline-block text-sm font-semibold text-gray-300 dark:text-gray-300 pr-1">
           {user?.name || 'User Name'}
         </span>
 

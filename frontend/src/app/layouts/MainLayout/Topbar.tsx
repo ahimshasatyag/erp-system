@@ -7,28 +7,18 @@ interface TopbarProps {
   isSidebarOpen?: boolean
 }
 
-export default function Topbar({ onToggleSidebar }: TopbarProps) {
+export default function Topbar({ onToggleSidebar, isSidebarOpen }: TopbarProps) {
   return (
-    <header className="fixed top-0 left-0 right-0 h-16 bg-white dark:bg-[#1f2028] border-b border-gray-200 dark:border-[#2e303a] flex items-center justify-between px-4 z-40 transition-colors duration-200">
+    <header className={`fixed top-0 right-0 h-16 bg-[#161821] dark:bg-[#16171d] border-b border-gray-800 dark:border-[#2e303a] flex items-center justify-between px-4 z-40 transition-all duration-300 ease-in-out ${
+      isSidebarOpen ? 'md:left-60' : 'md:left-16'
+    } left-0`}>
       
-      {/* Brand & Left Side Navigation */}
+      {/* Left Side Navigation Controls */}
       <div className="flex items-center gap-4">
-        {/* LOGO AREA */}
-        <a href="/" className="flex items-center gap-2 font-sans">
-          <div className="flex flex-col items-start leading-none">
-            <span className="font-extrabold text-[22px] tracking-tight text-[var(--primary)] animate-pulse">
-              EMMA
-            </span>
-            <span className="text-[9px] font-semibold text-gray-500 dark:text-gray-400 tracking-wider">
-              ERP SYSTEM
-            </span>
-          </div>
-        </a>
-
         {/* Sidebar Toggle Hamburger */}
         <button
           onClick={onToggleSidebar}
-          className="p-2 rounded-lg text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#2e303a] transition-all duration-200 outline-none cursor-pointer"
+          className="p-2 rounded-lg text-gray-400 hover:text-white dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-850/60 dark:hover:bg-[#2e303a] transition-all duration-200 outline-none cursor-pointer"
           title="Toggle Menu"
         >
           <svg
@@ -57,7 +47,7 @@ export default function Topbar({ onToggleSidebar }: TopbarProps) {
         <NotificationPanel />
 
         {/* Vertical Divider */}
-        <div className="w-[1px] h-6 bg-gray-200 dark:bg-[#2e303a]" />
+        <div className="w-[1px] h-6 bg-gray-800 dark:bg-[#2e303a]" />
 
         {/* Modular User Profile Menu */}
         <UserDropdown />

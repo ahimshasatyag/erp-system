@@ -108,7 +108,7 @@ export default function Sidebar({ isOpen, onClose, isCollapsed }: SidebarProps) 
       {/* Title */}
       {!isCollapsed && (
         <div className="px-5 py-2">
-          <p className="text-[10.5px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest leading-none">
+          <p className="text-[10.5px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest leading-none">
             Navigation Menu
           </p>
         </div>
@@ -132,7 +132,7 @@ export default function Sidebar({ isOpen, onClose, isCollapsed }: SidebarProps) 
                     className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 outline-none cursor-pointer ${
                       isSubmenuActive
                         ? 'bg-[var(--primary)] text-white'
-                        : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white'
                     }`}
                   >
                     <div className="flex items-center gap-3">
@@ -155,7 +155,7 @@ export default function Sidebar({ isOpen, onClose, isCollapsed }: SidebarProps) 
 
                   {/* Submenu links */}
                   {isGroupOpen && !isCollapsed && (
-                    <div className="mt-1 ml-6 pl-2 border-l border-gray-700 space-y-1 animate-in fade-in slide-in-from-top-1 duration-150">
+                    <div className="mt-1 ml-6 pl-2 border-l border-gray-250/70 dark:border-gray-700 space-y-1 animate-in fade-in slide-in-from-top-1 duration-150">
                       {item.submenu?.map((sub, idx) => {
                         const isSubActive = sub.path === currentPath
                         return (
@@ -164,8 +164,8 @@ export default function Sidebar({ isOpen, onClose, isCollapsed }: SidebarProps) 
                             to={sub.path}
                             className={`block px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-150 ${
                               isSubActive
-                                ? 'text-[var(--primary-container)] bg-gray-800 font-bold'
-                                : 'text-gray-400 hover:text-white hover:bg-gray-800/40'
+                                ? 'text-[var(--primary)] bg-gray-100 font-bold dark:text-[var(--primary-container)] dark:bg-gray-800'
+                                : 'text-gray-550 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800/40'
                             }`}
                           >
                             {sub.title}
@@ -182,7 +182,7 @@ export default function Sidebar({ isOpen, onClose, isCollapsed }: SidebarProps) 
                   className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${
                     isItemActive
                       ? 'bg-[var(--primary)] text-white shadow-md'
-                      : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                      : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   <span className="shrink-0">{item.icon}</span>
@@ -208,18 +208,34 @@ export default function Sidebar({ isOpen, onClose, isCollapsed }: SidebarProps) 
 
       {/* SIDEBAR MAIN PANEL */}
       <aside
-        className={`fixed top-16 bottom-0 left-0 bg-[#161821] dark:bg-[#16171d] text-gray-300 border-r border-gray-800 dark:border-[#2e303a] z-46 transition-all duration-300 ease-in-out flex flex-col justify-between ${
+        className={`fixed top-0 bottom-0 left-0 bg-white dark:bg-[#1f2028] text-gray-600 dark:text-gray-300 border-r border-gray-200 dark:border-[#2e303a] z-46 transition-all duration-300 ease-in-out flex flex-col justify-between ${
           isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         } ${isCollapsed ? 'w-16' : 'w-60'}`}
       >
+        {/* Brand Logo Header (Fixed at top of Sidebar) */}
+        <div className="h-16 border-b border-gray-150 dark:border-[#2e303a] flex items-center justify-center md:justify-start px-4 shrink-0 overflow-hidden">
+          <a href="/" className="flex items-center gap-2 font-sans">
+            <div className="flex flex-col items-start leading-none">
+              <span className="font-extrabold text-[22px] tracking-tight text-[var(--primary)] animate-pulse">
+                EMMA
+              </span>
+              {!isCollapsed && (
+                <span className="text-[9px] font-semibold text-gray-500 dark:text-gray-400 tracking-wider">
+                  ERP SYSTEM
+                </span>
+              )}
+            </div>
+          </a>
+        </div>
+
         {/* Scrollable menu area */}
-        <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-800">
+        <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-800">
           {renderMenuContent()}
         </div>
 
         {/* Footer info/System indicators inside Sidebar */}
         {!isCollapsed && (
-          <div className="p-4 border-t border-gray-800 dark:border-[#2e303a] bg-[#0e1017]/50 dark:bg-[#1f2028]/10 text-center text-[10px] text-gray-500">
+          <div className="p-4 border-t border-gray-150 dark:border-[#2e303a] bg-gray-50 dark:bg-[#1f2028]/10 text-center text-[10px] text-gray-400 dark:text-gray-500">
             <p>System Version: 2.1.0-RC</p>
             <p className="mt-0.5">DB Status: Connected</p>
           </div>

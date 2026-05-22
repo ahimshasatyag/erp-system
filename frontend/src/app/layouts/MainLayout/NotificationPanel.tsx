@@ -21,7 +21,7 @@ export default function NotificationPanel() {
     <div className="relative" ref={panelRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="p-2 rounded-lg text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#2e303a] relative transition-all duration-200 outline-none cursor-pointer"
+        className="p-2 rounded-lg text-gray-400 hover:text-white dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-800 dark:hover:bg-[#2e303a] relative transition-all duration-200 outline-none cursor-pointer"
         title="Notifications"
       >
         {/* Bell SVG Icon */}
