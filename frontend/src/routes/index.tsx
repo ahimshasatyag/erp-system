@@ -5,30 +5,41 @@ import MainLayout from '../app/layouts/MainLayout'
 import ProtectedRoute from '../app/router/ProtectedRoute'
 import PublicRoute from '../app/router/PublicRoute'
 
+// CSR Pages
+import CsrListPage from '../modules/csr/pages/CsrListPage'
+import CsrFormPage from '../modules/csr/pages/CsrAddPage'
+
 export default function AppRouter() {
     return (
         <BrowserRouter>
             <Routes>
                 {/* Public guest routes (Redirect to dashboard if logged in) */}
-                <Route 
-                    path="/login" 
+                <Route
+                    path="/login"
                     element={
                         <PublicRoute>
                             <LoginPage />
                         </PublicRoute>
-                    } 
+                    }
                 />
 
                 {/* Protected private routes (Redirect to login if unauthenticated) */}
-                <Route 
-                    path="/" 
+                <Route
+                    path="/*"
                     element={
                         <ProtectedRoute>
                             <MainLayout>
-                                <Dashboard1 />
+                                <Routes>
+                                    <Route path="/" element={<Dashboard1 />} />
+
+                                    {/* CSR Routes */}
+                                    <Route path="/csr" element={<CsrListPage />} />
+                                    <Route path="/csr/create" element={<CsrFormPage />} />
+                                    <Route path="/csr/:code/edit" element={<CsrFormPage />} />
+                                </Routes>
                             </MainLayout>
                         </ProtectedRoute>
-                    } 
+                    }
                 />
             </Routes>
         </BrowserRouter>
