@@ -1,5 +1,8 @@
-import { useState, type ReactNode } from 'react'
+import { useState, useEffect, type ReactNode } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import logo from '../../../assets/logo.png'
+import logoSquare from '../../../assets/logos.jpg'
+import { useSidebarMenus } from '../../../modules/menu/hooks/useMenu'
 
 interface SidebarProps {
   isOpen?: boolean
@@ -7,29 +10,15 @@ interface SidebarProps {
   isCollapsed?: boolean // For desktop collapse state
 }
 
-interface MenuItem {
-  title: string
-  path?: string
-  icon: ReactNode
-  submenu?: { title: string; path: string }[]
-}
-
 export default function Sidebar({ isOpen, onClose, isCollapsed }: SidebarProps) {
   const location = useLocation()
   const currentPath = location.pathname
 
-  // Menu groups toggle states
-  const [openGroups, setOpenGroups] = useState<{ [key: string]: boolean }>({
-    'Master Data': false,
-    'Transactions': false,
-    'Reports': false,
-  })
+  // Active menu group toggle state (allows only one open at a time)
+  const [activeGroup, setActiveGroup] = useState<string | null>(null)
 
   const toggleGroup = (title: string) => {
-    setOpenGroups((prev) => ({
-      ...prev,
-      [title]: !prev[title],
-    }))
+    setActiveGroup((prev) => (prev === title ? null : title))
   }
 
   // Icons SVGs
@@ -63,138 +52,223 @@ export default function Sidebar({ isOpen, onClose, isCollapsed }: SidebarProps) 
     </svg>
   )
 
-  const menuItems: MenuItem[] = [
-    {
-      title: 'Dashboard',
-      path: '/',
-      icon: dashboardIcon,
-    },
-    {
-      title: 'Master Data',
-      icon: databaseIcon,
-      submenu: [
-        { title: 'Users List', path: '/users' },
-        { title: 'User Levels', path: '/levels' },
-        { title: 'Settings System', path: '/settings' },
-      ],
-    },
-    {
-      title: 'Transactions',
-      icon: cartIcon,
-      submenu: [
-        { title: 'Purchase Orders', path: '/po' },
-        { title: 'Sales Orders', path: '/so' },
-        { title: 'Invoice List', path: '/invoices' },
-      ],
-    },
-    {
-      title: 'Reports',
-      icon: chartIcon,
-      submenu: [
-        { title: 'Sales Reports', path: '/reports/sales' },
-        { title: 'Inventory Logs', path: '/reports/inventory' },
-      ],
-    },
-    {
-      title: 'System Settings',
-      path: '/settings',
-      icon: settingsIcon,
-    },
-  ]
+  // Map icon names from database to local SVG elements
+  const iconMap: { [key: string]: ReactNode } = {
+    dashboardIcon: dashboardIcon,
+    databaseIcon: databaseIcon,
+    cartIcon: cartIcon,
+    chartIcon: chartIcon,
+    settingsIcon: settingsIcon,
+  }
+
+  // Fetch dynamic menus from database via React Query
+  const { data: menuItems = [], isLoading } = useSidebarMenus()
+
+  // Prepend static Dashboard menu item if it doesn't already exist in the database menu list
+  const hasDashboard = menuItems.some(item => item.title.toLowerCase() === 'dashboard')
+  const finalMenuItems = hasDashboard
+    ? menuItems
+    : [
+      {
+        title: 'Dashboard',
+        path: '/',
+        icon: 'dashboardIcon',
+        submenu: null
+      },
+      ...menuItems
+    ]
+
+  // Auto-open active group on load or path changes
+  useEffect(() => {
+    const activeItem = finalMenuItems.find(item =>
+      item.submenu?.some(sub => sub.path === currentPath)
+    )
+    if (activeItem) {
+      setActiveGroup(activeItem.title)
+    }
+  }, [currentPath, finalMenuItems])
+
+  // Close all open dropdowns when sidebar collapses (hamburger clicked)
+  useEffect(() => {
+    if (isCollapsed) {
+      setActiveGroup(null)
+    }
+  }, [isCollapsed])
 
   // Render navigation list
-  const renderMenuContent = () => (
-    <div className="py-4">
-      {/* Title */}
-      {!isCollapsed && (
-        <div className="px-5 py-2">
-          <p className="text-[10.5px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest leading-none">
-            Navigation Menu
-          </p>
+  const renderMenuContent = () => {
+    if (isLoading) {
+      return (
+        <div className="py-4 px-4 space-y-4">
+          {!isCollapsed && (
+            <div className="h-3 w-28 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
+          )}
+          <div className="space-y-3 mt-4">
+            <div className="h-10 w-full bg-gray-100 dark:bg-gray-800/60 rounded-lg animate-pulse" />
+            <div className="h-10 w-full bg-gray-100 dark:bg-gray-800/60 rounded-lg animate-pulse" />
+            <div className="h-10 w-full bg-gray-100 dark:bg-gray-800/60 rounded-lg animate-pulse" />
+          </div>
         </div>
-      )}
+      )
+    }
 
-      {/* Menu Tree */}
-      <nav className="mt-3 px-3 space-y-1">
-        {menuItems.map((item, index) => {
-          const isGroup = !!item.submenu
-          const isGroupOpen = openGroups[item.title]
-          const isItemActive = item.path === currentPath
-          const isSubmenuActive = item.submenu?.some(sub => sub.path === currentPath)
+    return (
+      <div className="py-4">
+        {/* Title */}
+        {!isCollapsed && (
+          <div className="px-5 py-2">
+            <p className="text-[10.5px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest leading-none">
+              Navigation Menu
+            </p>
+          </div>
+        )}
 
-          return (
-            <div key={index} className="w-full">
-              {isGroup ? (
-                /* Group parent item */
-                <div>
-                  <button
-                    onClick={() => toggleGroup(item.title)}
-                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 outline-none cursor-pointer ${
-                      isSubmenuActive
+        {/* Menu Tree */}
+        <nav className="mt-3 px-3 space-y-1">
+          {finalMenuItems.map((item, index) => {
+            const isGroup = item.submenu && item.submenu.length > 0
+            const isGroupOpen = activeGroup === item.title
+            const isItemActive = item.path === currentPath
+            const isSubmenuActive = item.submenu?.some(sub => sub.path === currentPath)
+
+            // Map deprecated book-variant-multiple to book-multiple for CSS compliance with modern MDI
+            const rawIcon = item.icon || ''
+            const mappedIcon = rawIcon.replace('mdi-book-variant-multiple', 'mdi-book-multiple')
+
+            // Check if icon is a class name (contains spaces or starts with fa/mdi)
+            const isClassIcon = mappedIcon && (mappedIcon.includes(' ') || mappedIcon.startsWith('fa') || mappedIcon.startsWith('mdi'))
+
+            // Determine class colors dynamically for consistent state contrast
+            const iconColorClass = isItemActive || isSubmenuActive
+              ? 'text-white'
+              : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white'
+
+            const resolvedIcon = isClassIcon ? (
+              <span className={`shrink-0 flex items-center justify-center w-5 h-5 transition-colors duration-200 ${iconColorClass}`}>
+                <i className={`${mappedIcon} text-base`} />
+              </span>
+            ) : (
+              mappedIcon && iconMap[mappedIcon] ? iconMap[mappedIcon] : databaseIcon
+            )
+
+            return (
+              <div key={index} className="w-full relative group">
+                {isGroup ? (
+                  /* Group parent item */
+                  <div>
+                    <button
+                      onClick={() => toggleGroup(item.title)}
+                      className={`group flex items-center justify-between transition-all duration-200 outline-none cursor-pointer ${
+                        isCollapsed
+                          ? 'mx-auto w-10 h-10 justify-center rounded-lg'
+                          : 'w-full px-3 py-2.5 rounded-lg text-sm font-semibold'
+                      } ${isSubmenuActive
                         ? 'bg-[var(--primary)] text-white'
                         : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="shrink-0">{item.icon}</span>
-                      {!isCollapsed && <span>{item.title}</span>}
-                    </div>
-                    {!isCollapsed && (
-                      <svg
-                        className={`w-4 h-4 transition-transform duration-200 ${
-                          isGroupOpen ? 'rotate-180' : ''
                         }`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    )}
-                  </button>
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="shrink-0">{resolvedIcon}</span>
+                        {!isCollapsed && <span>{item.title}</span>}
+                      </div>
+                      {!isCollapsed && (
+                        <svg
+                          className={`w-4 h-4 transition-transform duration-300 ${isGroupOpen ? 'rotate-180' : ''
+                            }`}
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      )}
+                    </button>
 
-                  {/* Submenu links */}
-                  {isGroupOpen && !isCollapsed && (
-                    <div className="mt-1 ml-6 pl-2 border-l border-gray-100 dark:border-gray-700 space-y-1 animate-in fade-in slide-in-from-top-1 duration-150">
-                      {item.submenu?.map((sub, idx) => {
-                        const isSubActive = sub.path === currentPath
-                        return (
-                          <Link
-                            key={idx}
-                            to={sub.path}
-                            className={`block px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-150 ${
-                              isSubActive
+                    {/* Submenu links with smooth transition */}
+                    <div
+                      className={`grid transition-all duration-300 ease-in-out ${isGroupOpen && !isCollapsed
+                          ? 'grid-rows-[1fr] opacity-100 mt-1.5 mb-1'
+                          : 'grid-rows-[0fr] opacity-0 pointer-events-none'
+                        }`}
+                    >
+                      <div className="overflow-hidden ml-6 pl-2 border-l border-gray-100 dark:border-gray-700 space-y-1">
+                        {item.submenu?.map((sub, idx) => {
+                          const isSubActive = sub.path === currentPath
+                          return (
+                            <Link
+                              key={idx}
+                              to={sub.path}
+                              className={`block text-left px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-150 ${isSubActive
                                 ? 'text-[var(--primary)] bg-gray-100 font-bold dark:text-[var(--primary-container)] dark:bg-gray-800'
                                 : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800/40'
-                            }`}
-                          >
-                            {sub.title}
-                          </Link>
-                        )
-                      })}
+                                }`}
+                            >
+                              {sub.title}
+                            </Link>
+                          )
+                        })}
+                      </div>
                     </div>
-                  )}
-                </div>
-              ) : (
-                /* Single active link */
-                <Link
-                  to={item.path || '#'}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${
-                    isItemActive
-                      ? 'bg-[var(--primary)] text-white shadow-md'
-                      : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white'
-                  }`}
-                >
-                  <span className="shrink-0">{item.icon}</span>
-                  {!isCollapsed && <span>{item.title}</span>}
-                </Link>
-              )}
-            </div>
-          )
-        })}
-      </nav>
-    </div>
-  )
+
+                    {/* Side Flyout Dropdown for Collapsed Mode (Positioned absolute inside layout, scrolling naturally) */}
+                    {isCollapsed && (
+                      <div className="absolute left-full top-0 ml-2 w-56 bg-white dark:bg-[#1f2028] rounded-lg shadow-2xl border border-gray-200 dark:border-[#2e303a] overflow-hidden opacity-0 scale-95 pointer-events-none group-hover:opacity-100 group-hover:scale-100 group-hover:pointer-events-auto transition-all duration-200 origin-left z-50">
+                        <div className="px-6 py-4 bg-gray-50 dark:bg-[#181920] border-b border-gray-100 dark:border-[#2e303a]">
+                          <span className="text-sm font-bold text-gray-900 dark:text-white tracking-wide block">{item.title}</span>
+                        </div>
+                        <div className="py-2 px-1.5 space-y-0.5">
+                          {item.submenu?.map((sub, idx) => {
+                            const isSubActive = sub.path === currentPath
+                            return (
+                              <Link
+                                key={idx}
+                                to={sub.path}
+                                className={`block text-left px-6 py-2.5 rounded-md text-xs font-medium italic transition-colors duration-150 ${isSubActive
+                                  ? 'text-[var(--primary)] bg-gray-50 font-bold dark:text-[var(--primary-container)] dark:bg-gray-800/60'
+                                  : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800/40'
+                                  }`}
+                              >
+                                {sub.title}
+                              </Link>
+                            )
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  /* Single active link */
+                  <>
+                    <Link
+                      to={item.path || '#'}
+                      className={`group flex items-center transition-all duration-200 ${
+                        isCollapsed
+                          ? 'mx-auto w-10 h-10 justify-center rounded-lg'
+                          : 'w-full px-3 py-2.5 rounded-lg text-sm font-semibold gap-3'
+                      } ${isItemActive
+                        ? 'bg-[var(--primary)] text-white shadow-md'
+                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white'
+                        }`}
+                    >
+                      <span className="shrink-0">{resolvedIcon}</span>
+                      {!isCollapsed && <span>{item.title}</span>}
+                    </Link>
+
+                    {/* Simple Tooltip for Collapsed Mode (Positioned absolute inside layout, scrolling naturally) */}
+                    {isCollapsed && (
+                      <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2.5 py-1.5 bg-gray-900 dark:bg-gray-800 text-white text-[11px] font-semibold rounded-md shadow-md opacity-0 scale-95 pointer-events-none group-hover:opacity-100 group-hover:scale-100 transition-all duration-150 origin-left z-50 whitespace-nowrap">
+                        {item.title}
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            )
+          })}
+        </nav>
+      </div>
+    )
+  }
 
   return (
     <>
@@ -208,38 +282,33 @@ export default function Sidebar({ isOpen, onClose, isCollapsed }: SidebarProps) 
 
       {/* SIDEBAR MAIN PANEL */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 bg-white dark:bg-[#1f2028] text-gray-600 dark:text-gray-300 border-r border-gray-200 dark:border-[#2e303a] z-46 transition-all duration-300 ease-in-out flex flex-col justify-between ${
+        className={`fixed top-0 bottom-0 left-0 h-screen bg-white dark:bg-[#1f2028] text-gray-600 dark:text-gray-300 border-r border-gray-200 dark:border-[#2e303a] z-46 transition-all duration-300 ease-in-out flex flex-col ${
           isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
-        } ${isCollapsed ? 'w-16' : 'w-60'}`}
+        } ${isCollapsed ? 'w-16 overflow-visible' : 'w-60'}`}
       >
         {/* Brand Logo Header (Fixed at top of Sidebar) */}
-        <div className="h-16 border-b border-gray-100 dark:border-[#2e303a] flex items-center justify-center md:justify-start px-4 shrink-0 overflow-hidden">
-          <a href="/" className="flex items-center gap-2 font-sans">
-            <div className="flex flex-col items-start leading-none">
-              <span className="font-extrabold text-[22px] tracking-tight text-[var(--primary)] animate-pulse">
-                EMMA
-              </span>
-              {!isCollapsed && (
-                <span className="text-[9px] font-semibold text-gray-500 dark:text-gray-400 tracking-wider">
-                  ERP SYSTEM
-                </span>
-              )}
-            </div>
+        <div className="h-16 border-b border-gray-100 dark:border-[#2e303a] flex items-center justify-center w-full shrink-0 overflow-hidden">
+          <a href="/" className="flex items-center justify-center w-full h-full px-4">
+            <img
+              src={isCollapsed ? logoSquare : logo}
+              alt="EMMA ERP SYSTEM"
+              className={`object-contain transition-all duration-300 ${isCollapsed ? 'h-10 w-10 rounded-md' : 'h-13 w-auto max-w-[210px]'
+                }`}
+            />
           </a>
         </div>
 
-        {/* Scrollable menu area */}
-        <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-800">
+        {/* Scrollable menu area:
+             - Expanded: own vertical scroll (overflow-y-auto), hidden scrollbar
+             - Collapsed: overflow-visible so side flyouts are not clipped */}
+        <div className={`flex-1 no-scrollbar ${
+          isCollapsed
+            ? 'overflow-visible'
+            : 'overflow-y-auto overflow-x-hidden'
+        }`}>
           {renderMenuContent()}
         </div>
 
-        {/* Footer info/System indicators inside Sidebar */}
-        {!isCollapsed && (
-          <div className="p-4 border-t border-gray-100 dark:border-[#2e303a] bg-gray-50 dark:bg-[#1f2028]/10 text-center text-[10px] text-gray-400 dark:text-gray-500">
-            <p>System Version: 2.1.0-RC</p>
-            <p className="mt-0.5">DB Status: Connected</p>
-          </div>
-        )}
       </aside>
     </>
   )

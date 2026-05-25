@@ -4,7 +4,7 @@ import api from '../../../services/api'
 import { useAuthStore } from '../../../stores/auth.store'
 
 export default function LoginPage() {
-    const [email, setEmail] = useState('')
+    const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState<string | null>(null)
     const [loading, setLoading] = useState(false)
@@ -15,15 +15,19 @@ export default function LoginPage() {
         e.preventDefault()
         setError(null)
 
-        if (!email || !password) {
-            setError('Email dan Password wajib diisi')
+        if (!username || !password) {
+            setError('Username dan Password wajib diisi')
             return
         }
 
         setLoading(true)
         try {
+            // Initialize CSRF cookie for Sanctum SPA stateful session
+            const csrfUrl = api.defaults.baseURL?.replace('/api', '/sanctum/csrf-cookie') || 'http://localhost:8000/sanctum/csrf-cookie';
+            await api.get(csrfUrl);
+
             const response = await api.post('/login', {
-                email,
+                username,
                 password,
             })
 
@@ -32,7 +36,7 @@ export default function LoginPage() {
             } else {
                 setUser({
                     name: 'Administrator',
-                    email: email,
+                    email: username,
                     link_foto: ''
                 })
             }
@@ -43,12 +47,12 @@ export default function LoginPage() {
                 console.warn('Backend API unreachable, logging in with local developer session.')
                 setUser({
                     name: 'PT. Eka Maju Mesinindo Admin',
-                    email: email,
+                    email: username,
                     link_foto: ''
                 })
                 navigate('/')
             } else {
-                const message = err.response?.data?.message || 'Login gagal, silakan periksa kembali email dan password Anda.'
+                const message = err.response?.data?.message || 'Login gagal, silakan periksa kembali username dan password Anda.'
                 setError(message)
             }
         } finally {
@@ -82,22 +86,22 @@ export default function LoginPage() {
                             )}
 
                             <div className="mb-4 w-full">
-                                <label className="text-[var(--text)] text-[12px] font-bold leading-[18px] inline-block mb-1" htmlFor="email-input">
-                                    Email
+                                <label className="text-[var(--text)] text-[12px] font-bold leading-[18px] inline-block mb-1" htmlFor="username-input">
+                                    Username
                                 </label>
                                 <div className="relative w-full">
                                     <div className="h-10 rounded-lg flex items-center w-full relative overflow-hidden transition-all duration-200 bg-white border border-[var(--border)] focus-within:border-[#4fd15a]">
                                         <input
-                                            id="email-input"
-                                            type="email"
-                                            name="email"
+                                            id="username-input"
+                                            type="text"
+                                            name="username"
                                             required
-                                            autoComplete="email"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
+                                            autoComplete="username"
+                                            value={username}
+                                            onChange={(e) => setUsername(e.target.value)}
                                             className="min-w-0 w-full text-[var(--text-h)] bg-transparent border-none outline-none h-full text-[14px] py-2 px-3 focus:ring-0"
                                             autoFocus
-                                            placeholder="Masukkan email Anda"
+                                            placeholder="Masukkan username Anda"
                                         />
                                     </div>
                                 </div>

@@ -10,10 +10,16 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => 'required|email',
+        $request->validate([
+            'username' => 'required|string',
             'password' => 'required',
         ]);
+
+        $credentials = [
+            'username' => $request->input('username'),
+            'password' => $request->input('password'),
+            'is_active' => 1,
+        ];
 
         if (!Auth::attempt($credentials)) {
             return response()->json([
