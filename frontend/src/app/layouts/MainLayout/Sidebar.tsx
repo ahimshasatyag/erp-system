@@ -14,6 +14,21 @@ export default function Sidebar({ isOpen, onClose, isCollapsed }: SidebarProps) 
   const location = useLocation()
   const currentPath = location.pathname
 
+  const resolvePath = (path?: string) => {
+    if (!path) return '#';
+    if (path.startsWith('http://') || path.startsWith('https://')) return path;
+    return path.startsWith('/') ? path : `/${path}`;
+  };
+
+  const checkIsActive = (menuPath?: string) => {
+    if (!menuPath) return false;
+    const resolved = resolvePath(menuPath);
+    if (resolved === '/') {
+      return currentPath === '/';
+    }
+    return currentPath === resolved || currentPath.startsWith(resolved + '/');
+  };
+
   // Active menu group toggle state (allows only one open at a time)
   const [activeGroup, setActiveGroup] = useState<string | null>(null)
 
@@ -81,7 +96,7 @@ export default function Sidebar({ isOpen, onClose, isCollapsed }: SidebarProps) 
   // Auto-open active group on load or path changes
   useEffect(() => {
     const activeItem = finalMenuItems.find(item =>
-      item.submenu?.some(sub => sub.path === currentPath)
+      item.submenu?.some(sub => checkIsActive(sub.path))
     )
     if (activeItem) {
       setActiveGroup(activeItem.title)
@@ -128,8 +143,8 @@ export default function Sidebar({ isOpen, onClose, isCollapsed }: SidebarProps) 
           {finalMenuItems.map((item, index) => {
             const isGroup = item.submenu && item.submenu.length > 0
             const isGroupOpen = activeGroup === item.title
-            const isItemActive = item.path === currentPath
-            const isSubmenuActive = item.submenu?.some(sub => sub.path === currentPath)
+            const isItemActive = checkIsActive(item.path)
+            const isSubmenuActive = item.submenu?.some(sub => checkIsActive(sub.path))
 
             // Map deprecated book-variant-multiple to book-multiple for CSS compliance with modern MDI
             const rawIcon = item.icon || ''
@@ -193,11 +208,11 @@ export default function Sidebar({ isOpen, onClose, isCollapsed }: SidebarProps) 
                     >
                       <div className="overflow-hidden ml-6 pl-2 border-l border-gray-100 dark:border-gray-700 space-y-1">
                         {item.submenu?.map((sub, idx) => {
-                          const isSubActive = sub.path === currentPath
+                          const isSubActive = checkIsActive(sub.path)
                           return (
                             <Link
                               key={idx}
-                              to={sub.path}
+                              to={resolvePath(sub.path)}
                               className={`block text-left px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-150 ${isSubActive
                                 ? 'text-[var(--primary)] bg-gray-100 font-bold dark:text-[var(--primary-container)] dark:bg-gray-800'
                                 : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800/40'
@@ -218,11 +233,11 @@ export default function Sidebar({ isOpen, onClose, isCollapsed }: SidebarProps) 
                         </div>
                         <div className="py-2 px-1.5 space-y-0.5">
                           {item.submenu?.map((sub, idx) => {
-                            const isSubActive = sub.path === currentPath
+                            const isSubActive = checkIsActive(sub.path)
                             return (
                               <Link
                                 key={idx}
-                                to={sub.path}
+                                to={resolvePath(sub.path)}
                                 className={`block text-left px-6 py-2.5 rounded-md text-xs font-medium italic transition-colors duration-150 ${isSubActive
                                   ? 'text-[var(--primary)] bg-gray-50 font-bold dark:text-[var(--primary-container)] dark:bg-gray-800/60'
                                   : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800/40'
@@ -240,7 +255,7 @@ export default function Sidebar({ isOpen, onClose, isCollapsed }: SidebarProps) 
                   /* Single active link */
                   <>
                     <Link
-                      to={item.path || '#'}
+                      to={resolvePath(item.path)}
                       className={`group flex items-center transition-all duration-200 ${
                         isCollapsed
                           ? 'mx-auto w-10 h-10 justify-center rounded-lg'

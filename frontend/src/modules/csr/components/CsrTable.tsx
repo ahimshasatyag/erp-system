@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 interface CsrTableProps {
@@ -7,13 +7,7 @@ interface CsrTableProps {
 }
 
 export default function CsrTable({ data, isLoading }: CsrTableProps) {
-    if (isLoading) {
-        return <div className="text-center py-10">Loading CSR data...</div>;
-    }
-
-    if (!data || data.length === 0) {
-        return <div className="text-center py-10 text-gray-500">No CSR data found.</div>;
-    }
+    const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
 
     const calculateAgeIn = (dateStr: string) => {
         if (!dateStr) return '';
@@ -23,19 +17,74 @@ export default function CsrTable({ data, isLoading }: CsrTableProps) {
         return Math.floor(diffTime / (1000 * 60 * 60 * 24));
     };
 
-    const getStatusBadge = (status: string) => {
-        switch (status) {
-            case 'DRAFT':
-                return <span className="px-2 py-1 text-xs font-semibold leading-5 text-gray-800 bg-gray-100 rounded-full">Draft CSR</span>;
-            case 'OUTSTANDING':
-                return <span className="px-2 py-1 text-xs font-semibold leading-5 text-yellow-800 bg-yellow-100 rounded-full">Outstanding</span>;
-            case 'CANCEL':
-                return <span className="px-2 py-1 text-xs font-semibold leading-5 text-red-800 bg-red-100 rounded-full">CANCELED</span>;
-            case 'DONE':
-                return <span className="px-2 py-1 text-xs font-semibold leading-5 text-green-800 bg-green-100 rounded-full">DONE</span>;
-            default:
-                return <span className="px-2 py-1 text-xs font-semibold leading-5 text-blue-800 bg-blue-100 rounded-full">{status}</span>;
+    const sortedData = useMemo(() => {
+        if (!data) return [];
+        let sortableItems = [...data];
+        if (sortConfig !== null) {
+            sortableItems.sort((a, b) => {
+                let aValue = a[sortConfig.key];
+                let bValue = b[sortConfig.key];
+
+                if (sortConfig.key === 'id_afs_csr') {
+                    aValue = data.findIndex(r => r.id_afs_csr === a.id_afs_csr);
+                    bValue = data.findIndex(r => r.id_afs_csr === b.id_afs_csr);
+                } else if (sortConfig.key === 'csr_date') {
+                    aValue = new Date(a.csr_date).getTime();
+                    bValue = new Date(b.csr_date).getTime();
+                } else if (sortConfig.key === 'age') {
+                    aValue = calculateAgeIn(a.csr_date);
+                    bValue = calculateAgeIn(b.csr_date);
+                }
+
+                if (aValue === undefined || aValue === null) aValue = '';
+                if (bValue === undefined || bValue === null) bValue = '';
+
+                if (typeof aValue === 'string' && typeof bValue === 'string') {
+                    aValue = aValue.toLowerCase();
+                    bValue = bValue.toLowerCase();
+                }
+
+                if (aValue < bValue) {
+                    return sortConfig.direction === 'asc' ? -1 : 1;
+                }
+                if (aValue > bValue) {
+                    return sortConfig.direction === 'asc' ? 1 : -1;
+                }
+                return 0;
+            });
         }
+        return sortableItems;
+    }, [data, sortConfig]);
+
+    const handleSort = (key: string) => {
+        let direction: 'asc' | 'desc' = 'asc';
+        if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+        setSortConfig({ key, direction });
+    };
+
+    const getSortIcon = (key: string) => {
+        if (!sortConfig || sortConfig.key !== key) {
+            return <span className="text-gray-400 font-normal text-[10px]">⇅</span>;
+        }
+        if (sortConfig.direction === 'asc') {
+            return <span className="text-blue-600 font-bold text-[12px]">↑</span>;
+        }
+        return <span className="text-blue-600 font-bold text-[12px]">↓</span>;
+    };
+
+    if (isLoading) {
+        return <div className="text-center py-10">Loading CSR data...</div>;
+    }
+
+    if (!data || data.length === 0) {
+        return <div className="text-center py-10 text-gray-500">No CSR data found.</div>;
+    }
+
+    const getNo = (row: any) => {
+        const originalIdx = data.findIndex(r => r.id_afs_csr === row.id_afs_csr);
+        return data.length - originalIdx;
     };
 
     return (
@@ -44,34 +93,34 @@ export default function CsrTable({ data, isLoading }: CsrTableProps) {
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                         <tr>
-                            <th className="px-4 py-3 text-left font-bold text-gray-600 cursor-pointer group border-r border-gray-200 w-12">
-                                <div className="flex items-center justify-between">No <span className="text-gray-400 font-normal text-[10px]">⇅</span></div>
+                            <th onClick={() => handleSort('id_afs_csr')} className="px-4 py-3 text-left font-bold text-gray-600 cursor-pointer group border-r border-gray-200 w-12 hover:bg-gray-100 transition-colors">
+                                <div className="flex items-center justify-between">No {getSortIcon('id_afs_csr')}</div>
                             </th>
-                            <th className="px-4 py-3 text-left font-bold text-gray-600 cursor-pointer group border-r border-gray-200">
-                                <div className="flex items-center justify-between">Date <span className="text-gray-400 font-normal text-[10px]">⇅</span></div>
+                            <th onClick={() => handleSort('csr_date')} className="px-4 py-3 text-left font-bold text-gray-600 cursor-pointer group border-r border-gray-200 hover:bg-gray-100 transition-colors">
+                                <div className="flex items-center justify-between">Date {getSortIcon('csr_date')}</div>
                             </th>
-                            <th className="px-4 py-3 text-left font-bold text-gray-600 cursor-pointer group border-r border-gray-200">
-                                <div className="flex items-center justify-between">Age In <span className="text-gray-400 font-normal text-[10px]">⇅</span></div>
+                            <th onClick={() => handleSort('age')} className="px-4 py-3 text-left font-bold text-gray-600 cursor-pointer group border-r border-gray-200 hover:bg-gray-100 transition-colors">
+                                <div className="flex items-center justify-between">Age In {getSortIcon('age')}</div>
                             </th>
-                            <th className="px-4 py-3 text-left font-bold text-gray-600 cursor-pointer group border-r border-gray-200">
-                                <div className="flex items-center justify-between">Request <span className="text-gray-400 font-normal text-[10px]">⇅</span></div>
+                            <th onClick={() => handleSort('csr_code')} className="px-4 py-3 text-left font-bold text-gray-600 cursor-pointer group border-r border-gray-200 hover:bg-gray-100 transition-colors">
+                                <div className="flex items-center justify-between">Request {getSortIcon('csr_code')}</div>
                             </th>
-                            <th className="px-4 py-3 text-left font-bold text-gray-600 cursor-pointer group border-r border-gray-200">
-                                <div className="flex items-center justify-between">Customers <span className="text-gray-400 font-normal text-[10px]">⇅</span></div>
+                            <th onClick={() => handleSort('nm_customers')} className="px-4 py-3 text-left font-bold text-gray-600 cursor-pointer group border-r border-gray-200 hover:bg-gray-100 transition-colors">
+                                <div className="flex items-center justify-between">Customers {getSortIcon('nm_customers')}</div>
                             </th>
-                            <th className="px-4 py-3 text-left font-bold text-gray-600 cursor-pointer group border-r border-gray-200">
-                                <div className="flex items-center justify-between">Product Name <span className="text-gray-400 font-normal text-[10px]">⇅</span></div>
+                            <th onClick={() => handleSort('code_product')} className="px-4 py-3 text-left font-bold text-gray-600 cursor-pointer group border-r border-gray-200 hover:bg-gray-100 transition-colors">
+                                <div className="flex items-center justify-between">Product Name {getSortIcon('code_product')}</div>
                             </th>
-                            <th className="px-4 py-3 text-left font-bold text-gray-600 cursor-pointer group border-r border-gray-200">
-                                <div className="flex items-center justify-between">User <span className="text-gray-400 font-normal text-[10px]">⇅</span></div>
+                            <th onClick={() => handleSort('nm_karyawan')} className="px-4 py-3 text-left font-bold text-gray-600 cursor-pointer group border-r border-gray-200 hover:bg-gray-100 transition-colors">
+                                <div className="flex items-center justify-between">User {getSortIcon('nm_karyawan')}</div>
                             </th>
-                            <th className="px-4 py-3 text-left font-bold text-gray-600 cursor-pointer group">
-                                <div className="flex items-center justify-between">Status <span className="text-gray-400 font-normal text-[10px]">⇅</span></div>
+                            <th onClick={() => handleSort('csr_status')} className="px-4 py-3 text-left font-bold text-gray-600 cursor-pointer group hover:bg-gray-100 transition-colors">
+                                <div className="flex items-center justify-between">Status {getSortIcon('csr_status')}</div>
                             </th>
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-100">
-                        {data.map((row, idx) => {
+                        {sortedData.map((row, idx) => {
                             const urlCode = row.csr_code.replace(/\//g, '.');
                             const editUrl = `/csr/${urlCode}/edit`;
                             const isEven = idx % 2 === 0;
@@ -79,7 +128,7 @@ export default function CsrTable({ data, isLoading }: CsrTableProps) {
                             return (
                                 <tr key={row.id_afs_csr} className={`${isEven ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-100 transition-colors`}>
                                     <td className="px-4 py-2 whitespace-nowrap text-gray-700">
-                                        <Link to={editUrl} className="text-blue-600">{data.length - idx}</Link>
+                                        <Link to={editUrl} className="text-blue-600">{getNo(row)}</Link>
                                     </td>
                                     <td className="px-4 py-2 whitespace-nowrap text-gray-700">
                                         <Link to={editUrl} className="hover:text-blue-600">

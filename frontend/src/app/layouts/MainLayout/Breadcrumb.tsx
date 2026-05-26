@@ -11,41 +11,28 @@ export default function Breadcrumb() {
 
   // Maps exact routes to user-friendly structured breadcrumbs
   const getBreadcrumbs = (pathname: string): BreadcrumbStep[] => {
-    const steps: BreadcrumbStep[] = [{ label: 'Home', path: '/' }]
+    const steps: BreadcrumbStep[] = []
 
     if (pathname === '/' || pathname === '') {
       steps.push({ label: 'Dashboard' })
       return steps
     }
 
-    // Master Data
-    if (pathname === '/users') {
-      steps.push({ label: 'Master Data' })
-      steps.push({ label: 'Users List' })
-    } else if (pathname === '/levels') {
-      steps.push({ label: 'Master Data' })
-      steps.push({ label: 'User Levels' })
-    } else if (pathname === '/settings') {
-      steps.push({ label: 'Settings' })
+    // CSR List
+    else if (pathname === '/csr') {
+      steps.push({ label: 'Customer Request (CSR)' });
     }
-    // Transactions
-    else if (pathname === '/po') {
-      steps.push({ label: 'Transactions' })
-      steps.push({ label: 'Purchase Orders' })
-    } else if (pathname === '/so') {
-      steps.push({ label: 'Transactions' })
-      steps.push({ label: 'Sales Orders' })
-    } else if (pathname === '/invoices') {
-      steps.push({ label: 'Transactions' })
-      steps.push({ label: 'Invoices' })
+    // CSR Add
+    else if (pathname === '/csr/create') {
+      steps.push({ label: 'Customer Request (CSR)', path: '/csr' });
+      steps.push({ label: 'Tambah' });
     }
-    // Reports
-    else if (pathname === '/reports/sales') {
-      steps.push({ label: 'Reports' })
-      steps.push({ label: 'Sales Reports' })
-    } else if (pathname === '/reports/inventory') {
-      steps.push({ label: 'Reports' })
-      steps.push({ label: 'Inventory Logs' })
+    // CSR Edit/Detail Route
+    else if (pathname.startsWith('/csr/') && pathname.endsWith('/edit')) {
+      const code = pathname.split('/')[2];
+      const formattedCode = code.replace(/\./g, '/');
+      steps.push({ label: 'Customer Request (CSR)', path: '/csr' });
+      steps.push({ label: `Edit ${formattedCode}` });
     }
     // Dynamic Fallback
     else {
@@ -54,7 +41,7 @@ export default function Breadcrumb() {
         const formatted = seg
           .replace(/-/g, ' ')
           .replace(/\b\w/g, (char) => char.toUpperCase())
-        
+
         const accumPath = '/' + segments.slice(0, index + 1).join('/')
         const isLast = index === segments.length - 1
 
@@ -93,7 +80,7 @@ export default function Breadcrumb() {
             )}
 
             {isLast ? (
-              <span className="text-white dark:text-gray-200 truncate max-w-[150px]">
+              <span className="text-white dark:text-gray-200">
                 {step.label}
               </span>
             ) : (
@@ -101,11 +88,6 @@ export default function Breadcrumb() {
                 to={step.path || '#'}
                 className="hover:text-white dark:hover:text-rose-400 transition-colors flex items-center gap-1"
               >
-                {step.label === 'Home' && (
-                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                  </svg>
-                )}
                 <span>{step.label}</span>
               </Link>
             )}

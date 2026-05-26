@@ -8,6 +8,7 @@ import PublicRoute from '../app/router/PublicRoute'
 // CSR Pages
 import CsrListPage from '../modules/csr/pages/CsrListPage'
 import CsrFormPage from '../modules/csr/pages/CsrAddPage'
+import CsrEditPage from '../modules/csr/pages/CsrEditPage'
 
 export default function AppRouter() {
     return (
@@ -35,7 +36,7 @@ export default function AppRouter() {
                                     {/* CSR Routes */}
                                     <Route path="/csr" element={<CsrListPage />} />
                                     <Route path="/csr/create" element={<CsrFormPage />} />
-                                    <Route path="/csr/:code/edit" element={<CsrFormPage />} />
+                                    <Route path="/csr/:code/edit" element={<CsrEditPage />} />
                                 </Routes>
                             </MainLayout>
                         </ProtectedRoute>

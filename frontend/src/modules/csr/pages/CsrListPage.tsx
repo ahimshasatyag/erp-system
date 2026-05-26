@@ -5,7 +5,15 @@ import CsrTable from '../components/CsrTable';
 import { useGetCsrs, useGetMenuInfo } from '../hooks/useCsr';
 
 export default function CsrListPage() {
-    const [filters, setFilters] = useState({
+    const [draftFilters, setDraftFilters] = useState({
+        search: '',
+        start_date: '',
+        end_date: '',
+        status: '',
+        all: false
+    });
+
+    const [activeFilters, setActiveFilters] = useState({
         search: '',
         start_date: '',
         end_date: '',
@@ -14,8 +22,8 @@ export default function CsrListPage() {
     });
 
     const { data, isLoading, isError } = useGetCsrs({
-        ...filters,
-        all: filters.all ? true : undefined,
+        ...activeFilters,
+        all: activeFilters.all ? true : undefined,
     });
 
     const { data: menuInfo } = useGetMenuInfo('10603');
@@ -23,17 +31,15 @@ export default function CsrListPage() {
 
     const handleFilterChange = (name: string, value: string | boolean) => {
         if (name === 'triggerFilter') {
-            // Refetch is automatically handled by react-query when filters change,
-            // but since we are changing state on every keystroke/change, we might want to debounce.
-            // For now, react-query handles the data fetching reactively.
+            setActiveFilters(draftFilters);
             return;
         }
-        setFilters(prev => ({ ...prev, [name]: value }));
+        setDraftFilters(prev => ({ ...prev, [name]: value }));
     };
 
     // Apply local status filtering if needed, though backend should ideally handle it
     const filteredData = data?.data?.filter((item: any) => {
-        if (filters.status && item.csr_status !== filters.status) return false;
+        if (activeFilters.status && item.csr_status !== activeFilters.status) return false;
         return true;
     });
 
@@ -61,7 +67,7 @@ export default function CsrListPage() {
 
                     {/* Filter Row - Centered */}
                     <div className="flex justify-center mb-10">
-                        <CsrFilters filters={filters} onChange={handleFilterChange} />
+                        <CsrFilters filters={draftFilters} onChange={handleFilterChange} />
                     </div>
 
                     {/* Show Entries, Copy, Search Row */}

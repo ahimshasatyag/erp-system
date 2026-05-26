@@ -165,4 +165,45 @@ class Cform extends Controller
             'provinsi' => $data->provinsi ?? null,
         ]);
     }
+
+    public function formData()
+    {
+        $products = \Illuminate\Support\Facades\DB::table('m_product')->select('id_product', 'code_product', 'nm_product')->get();
+        $customers = \Illuminate\Support\Facades\DB::table('m_customers')->select('id_customers', 'nm_customers', 'customers_address', 'provinsi')->get();
+        $karyawan = \Illuminate\Support\Facades\DB::table('m_karyawan')->select('id_karyawan', 'nm_karyawan')->get();
+
+        return response()->json([
+            'products' => $products,
+            'customers' => $customers,
+            'karyawan' => $karyawan
+        ]);
+    }
+
+    public function addNewCst(Request $request)
+    {
+        $request->validate([
+            'csr_code' => 'required|string'
+        ]);
+
+        $csrCode = $request->input('csr_code');
+        $csr = \Illuminate\Support\Facades\DB::table('tb_afs_csr')->where('csr_code', $csrCode)->first();
+
+        if (!$csr) {
+            return response()->json(['status' => false, 'message' => 'CSR tidak ditemukan'], 404);
+        }
+
+        $cstCode = \App\Helpers\CsrHelper::generateCstCode();
+
+        \Illuminate\Support\Facades\DB::table('tb_afs_cst')->insert([
+            'id_afs_csr' => $csr->id_afs_csr,
+            'cst_code' => $cstCode,
+            'cst_date' => now(),
+            'status' => 'OUTSTANDING'
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'cst_code' => str_replace('/', '.', $cstCode)
+        ]);
+    }
 }
