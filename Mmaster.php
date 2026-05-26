@@ -7,63 +7,55 @@ use Ozdemir\Datatables\DB\CodeigniterAdapter;
 
 class Mmaster extends CI_Model
 {
-    public function data($i_menu, $folder, $start_date, $end_date)
+    public function data($i_menu, $folder)
     {
         $datatables = new Datatables(new CodeigniterAdapter);
-        $datatables->query("SELECT a.*, m_karyawan.nm_karyawan, m_customers.nm_customers, m_product.nm_product, m_product.code_product, '$folder' AS folder
-            FROM tb_afs_csr a
-            JOIN m_karyawan ON a.id_karyawan = m_karyawan.id_karyawan 
-            JOIN m_customers ON a.id_customers = m_customers.id_customers 
-            JOIN m_product ON a.id_product = m_product.id_product 
-            WHERE a.csr_status NOT IN ('IN PROGRESS')
-            AND a.csr_date >= '$start_date'
-            AND a.csr_date <= '$end_date'
-            ORDER BY a.csr_code ASC");
-
+        $datatables->query("SELECT
+            b.csr_date, a.cst_date, a.cst_code, b.csr_code,
+            c.nm_customers, d.code_product, e.nm_karyawan, a.status, '$folder' as folder
+        FROM tb_afs_cst a
+        JOIN tb_afs_csr b ON a.id_afs_csr = b.id_afs_csr
+        JOIN m_karyawan e ON b.id_karyawan = e.id_karyawan
+        JOIN m_customers c ON b.id_customers = c.id_customers
+        JOIN m_product d ON b.id_product = d.id_product
+        WHERE b.f_cancel = 0
+        ");
         $datatables->hide('folder');
-        $datatables->hide('csr_code');
+        $datatables->hide('cst_code');
         $no = 1;
 
-        $datatables->edit('csr_code', function ($data) use ($folder) {
-            $csr_code = $data['csr_code'];
-            $folder = $data['folder'];
-
-            $hasil = "<a href=\"#\" onclick='show(\"$folder/cform/edit/$csr_code/f\",\"#main\"); return false;'>$csr_code</a>";
+        $datatables->edit('cst_code', function ($data) use ($folder) {
+            $cst_code = $data['cst_code'];
+            $hasil = "<a href=\"#\" onclick='show(\"$folder/cform/edit/$cst_code/f\",\"#main\"); return false;'>$cst_code</a>";
             return $hasil;
         });
 
-        $datatables->edit('csr_date', function ($data) use ($folder) {
-            $csr_code = $data['csr_code'];
-            $folder = $data['folder'];
-            $date_csr = date("d-m-Y", strtotime($data['csr_date']));
-
-            $hasil = "<a href=\"#\" onclick='show(\"$folder/cform/edit/$csr_code/f\",\"#main\"); return false;'>$date_csr</a>";
+        $datatables->edit('cst_date', function ($data) use ($folder) {
+            $date_cst = date("d-m-Y", strtotime($data['cst_date']));
+            $hasil = "<a href=\"#\" onclick='show(\"$folder/cform/edit/$date_cst/f\",\"#main\"); return false;'>$date_cst</a>";
             return $hasil;
         });
 
         $datatables->edit('nm_customers', function ($data) use ($folder) {
-            $csr_code = $data['csr_code'];
-            $folder = $data['folder'];
             $nm_customers = $data['nm_customers'];
+            $hasil = "<a href=\"#\" onclick='show(\"$folder/cform/edit/$nm_customers/f\",\"#main\"); return false;'>$nm_customers</a>";
+            return $hasil;
+        });
 
-            $hasil = "<a href=\"#\" onclick='show(\"$folder/cform/edit/$csr_code/f\",\"#main\"); return false;'>$nm_customers</a>";
+        $datatables->edit('csr_code', function ($data) use ($folder) {
+            $csr_code = $data['csr_code'];
+            $hasil = "<a href=\"#\" onclick='show(\"$folder/cform/edit/$csr_code/f\",\"#main\"); return false;'><b>" . substr($csr_code, 16) . "</b></a>";
             return $hasil;
         });
 
         $datatables->edit('nm_karyawan', function ($data) use ($folder) {
-            $csr_code = $data['csr_code'];
-            $folder = $data['folder'];
             $nm_karyawan = $data['nm_karyawan'];
-
-            $hasil = "<a href=\"#\" onclick='show(\"$folder/cform/edit/$csr_code/f\",\"#main\"); return false;'>$nm_karyawan</a>";
+            $hasil = "<a href=\"#\" onclick='show(\"$folder/cform/edit/$nm_karyawan/f\",\"#main\"); return false;'>$nm_karyawan</a>";
             return $hasil;
         });
 
         $datatables->edit('status', function ($data) use ($folder) {
-            $csr_code = $data['csr_code'];
-            $folder = $data['folder'];
-            $status = $data['csr_status'];
-
+            $status = $data['status'];
             $badge = '';
             switch ($status) {
                 case 'DRAFT':
@@ -72,13 +64,19 @@ class Mmaster extends CI_Model
                 case 'OUTSTANDING':
                     $badge = 'dark';
                     break;
-                case 'CANCEL':
+                case 'CANCELED':
                     $badge = 'info';
+                    break;
+                case 'SALES ORDER':
+                    $badge = 'secondary';
+                    break;
+                case 'READY TO DELIVER':
+                    $badge = 'success';
                     break;
                 default:
                     $badge = 'primary';
             }
-            $hasil = "<a href=\"#\" onclick='show(\"$folder/cform/edit/$csr_code/f\",\"#main\"); return false;'><span class=\"badge badge-$badge\">$status</span></a>";
+            $hasil = "<a href=\"#\" onclick='show(\"$folder/cform/edit/$status/f\",\"#main\"); return false;'><span class=\"badge badge-$badge\">$status</span></a>";
             return $hasil;
         });
 
@@ -87,12 +85,25 @@ class Mmaster extends CI_Model
 
     public function bacasemua($search, $start_date, $end_date, $all)
     {
-        $this->db->select('tb_afs_csr.*, m_karyawan.nm_karyawan, m_customers.nm_customers, m_product.nm_product, m_product.code_product');
-        $this->db->from('tb_afs_csr');
+        $this->db->select('
+            tb_afs_cst.cst_code,
+            tb_afs_cst.cst_date,
+            tb_afs_cst.status,
+            tb_afs_csr.csr_code,
+            tb_afs_csr.csr_date,
+            tb_afs_csr.f_cancel,
+            tb_afs_csr.approved_csr_by,
+            m_karyawan.nm_karyawan,
+            m_customers.nm_customers,
+            m_product.nm_product,
+            m_product.code_product
+        ');
+        $this->db->from('tb_afs_cst');
+        $this->db->join('tb_afs_csr', 'tb_afs_cst.id_afs_csr = tb_afs_csr.id_afs_csr');
         $this->db->join('m_karyawan', 'tb_afs_csr.id_karyawan = m_karyawan.id_karyawan');
         $this->db->join('m_customers', 'tb_afs_csr.id_customers = m_customers.id_customers');
         $this->db->join('m_product', 'tb_afs_csr.id_product = m_product.id_product');
-        $this->db->where_not_in('tb_afs_csr.csr_status', ['IN PROGRESS']);
+        $this->db->where("tb_afs_cst.cst_code <> 'kosong'");
 
         if (empty($start_date)) {
             $start_date = date('Y-m-01');
@@ -105,8 +116,8 @@ class Mmaster extends CI_Model
         $all = empty($all) ? false : true;
 
         if (!$all) {
-            $this->db->where('tb_afs_csr.csr_date >=', $start_date);
-            $this->db->where('tb_afs_csr.csr_date <=', $end_date);
+            $this->db->where('tb_afs_cst.cst_date >=', $start_date);
+            $this->db->where('tb_afs_cst.cst_date <=', $end_date);
         }
 
         if ($search) {
@@ -117,24 +128,27 @@ class Mmaster extends CI_Model
 
                 foreach ($array_like as $key => $value) {
                     if ($key == 0) {
-                        $this->db->like('csr_code', $value);
+                        $this->db->like('tb_afs_csr.csr_code', $value);
+                        $this->db->like('tb_afs_cst.cst_code', $value);
                         $this->db->like('nm_customers', $value);
                         $this->db->like('code_product', $value);
                         $this->db->like('nm_karyawan', $value);
-                        $this->db->like('csr_status', $value);
+                        $this->db->like('tb_afs_cst.status', $value);
                     } else {
-                        $this->db->or_like('csr_code', $value);
+                        $this->db->or_like('tb_afs_csr.csr_code', $value);
+                        $this->db->or_like('tb_afs_cst.cst_code', $value);
                         $this->db->or_like('nm_customers', $value);
                         $this->db->or_like('code_product', $value);
                         $this->db->or_like('nm_karyawan', $value);
-                        $this->db->or_like('csr_status', $value);
+                        $this->db->or_like('tb_afs_cst.status', $value);
                     }
                 }
                 $this->db->group_end();
             }
         }
 
-        $this->db->order_by('tb_afs_csr.csr_code', 'ASC');
+        $this->db->group_by('tb_afs_csr.csr_code, tb_afs_cst.cst_code, m_customers.nm_customers, m_product.code_product, m_karyawan.nm_karyawan, m_product.nm_product, tb_afs_cst.status, tb_afs_csr.csr_date, tb_afs_csr.f_cancel, tb_afs_csr.approved_csr_by, tb_afs_cst.cst_date');
+        $this->db->order_by('tb_afs_cst.cst_code', 'DESC');
 
         $count = $this->db->count_all_results('', false);
         $count = intval($count);
@@ -150,20 +164,62 @@ class Mmaster extends CI_Model
         );
     }
 
-    public function bacadetail($csr_code)
-    {
 
-        $this->db->select('tb_afs_csr.*, m_karyawan.nm_karyawan, m_customers.nm_customers, m_customers.customers_mobile, tb_so_hdr.customers_address, m_product.nm_product, m_product.code_product, m_product.id_product_kategori, tb_so_hdr.keterangan, tb_so_hdr.internal_notes, m_product_kategori.nm_product_kategori');
-        $this->db->from('tb_afs_csr');
-        $this->db->join('m_karyawan', 'tb_afs_csr.id_karyawan = m_karyawan.id_karyawan', 'left');
-        $this->db->join('m_customers', 'tb_afs_csr.id_customers = m_customers.id_customers', 'left');
-        $this->db->join('m_product', 'tb_afs_csr.id_product = m_product.id_product', 'left');
+    public function bacadetail($cst_code)
+    {
+        $this->db->select('
+            tb_afs_cst.id_afs_cst,
+            tb_afs_cst.id_afs_csr,
+            tb_afs_cst.cst_code,
+            tb_afs_cst.cst_date,
+            tb_afs_cst.status,
+            tb_afs_cst.approve_cst,
+            tb_afs_cst.approved_cst_by,
+            tb_afs_cst.done_cst_by,
+            tb_afs_cst.ignore_cst_by,
+            tb_afs_cst.cst_approve_date,
+            tb_afs_cst.cst_ignore_date,
+            tb_afs_cst.cst_done_date,
+            tb_afs_csr.csr_code,
+            tb_afs_csr.csr_date,
+            tb_afs_csr.so_date,
+            tb_afs_csr.id_customers,
+            tb_afs_csr.id_product,
+            tb_afs_csr.id_karyawan,
+            tb_afs_csr.barcode,
+            tb_afs_csr.do_code,
+            tb_afs_csr.waranty_start,
+            tb_afs_csr.waranty_time,
+            tb_afs_csr.waranty_end,
+            tb_afs_csr.lap_kerusakan,
+            tb_afs_csr.lokasi,
+            tb_afs_csr.sts_pasang,
+            tb_afs_csr.f_cancel,
+            tb_afs_csr.image,
+            tb_afs_csr.alasan_cancel,
+            tb_afs_csr.csr_status,
+            tb_afs_csr.approved_csr_by,
+            m_karyawan.nm_karyawan,
+            m_customers.nm_customers,
+            m_customers.customers_mobile,
+            tb_so_hdr.customers_address,
+            tb_so_hdr.keterangan,
+            m_product.nm_product,
+            m_product.code_product,
+            m_product.id_product_kategori,
+            m_product_kategori.nm_product_kategori
+        ');
+        $this->db->from('tb_afs_cst');
+        $this->db->join('tb_afs_csr', 'tb_afs_cst.id_afs_csr = tb_afs_csr.id_afs_csr');
+        $this->db->join('m_karyawan', 'tb_afs_csr.id_karyawan = m_karyawan.id_karyawan');
+        $this->db->join('m_customers', 'tb_afs_csr.id_customers = m_customers.id_customers');
+        $this->db->join('m_product', 'tb_afs_csr.id_product = m_product.id_product');
         $this->db->join('tb_do_hdr', 'tb_afs_csr.do_code = tb_do_hdr.code_do', 'left');
         $this->db->join('m_product_kategori', 'm_product.id_product_kategori = m_product_kategori.id_product_kategori', 'left');
         $this->db->join('tb_so_hdr', 'tb_do_hdr.id_so = tb_so_hdr.id_so', 'left');
-        $this->db->where('tb_afs_csr.csr_code', $csr_code);
+        $this->db->where('tb_afs_cst.cst_code', $cst_code);
 
-        $this->db->order_by('csr_code', 'ASC');
+        $this->db->order_by('tb_afs_cst.cst_code', 'DESC');
 
         $count = $this->db->count_all_results('', false);
         $count = intval($count);
@@ -176,50 +232,45 @@ class Mmaster extends CI_Model
         );
     }
 
-    public function bacadetail_cst($csr_code)
+    public function bacadetail2($cst_code)
     {
-        $this->db->select('
-            a.id_afs_cst,
-            a.cst_code,
-            a.cst_date,
-            a.status,
-            a.approved_cst_by,
-            b.csr_code,
-            b.approved_csr_by,
-            d.nm_product,
-            d.code_product,
-            e.nm_karyawan
-        ');
-        $this->db->from('tb_afs_cst a');
-        $this->db->join('tb_afs_csr b', 'a.id_afs_csr = b.id_afs_csr');
-        $this->db->join('m_karyawan e', 'b.id_karyawan = e.id_karyawan');
-        $this->db->join('m_product d', 'b.id_product = d.id_product');
-        $this->db->where('b.csr_code', $csr_code);
-        $this->db->where('a.cst_code <>', 'kosong');
-        $this->db->order_by('a.cst_code', 'DESC');
+        $this->db->select('tb_afs_lkt.*, tb_afs_csr.id_customers, m_customers.nm_customers');
+        $this->db->from('tb_afs_lkt');
+        $this->db->join('tb_afs_cst', 'tb_afs_lkt.id_afs_cst = tb_afs_cst.id_afs_cst');
+        $this->db->join('tb_afs_csr', 'tb_afs_cst.id_afs_csr = tb_afs_csr.id_afs_csr');
+        $this->db->join('m_customers', 'tb_afs_csr.id_customers = m_customers.id_customers');
+        $this->db->where('tb_afs_lkt.f_cancel', '0');
+        $this->db->where('tb_afs_cst.cst_code', $cst_code);
 
-        return $this->db->get();
-    }
+        $this->db->order_by('tb_afs_cst.cst_code', 'DESC');
 
-    public function bacabarcode($barcode)
-    {
-        $this->db->select("c.code_so, a.nbarcode, b.date_delivery, b.code_do, a.id_product, b.status_do, b.id_customers, '' as mesin_lama, 'so_ok' as so_ok, d.provinsi");
-        $this->db->from("tb_do_dtl a");
-        $this->db->join("tb_do_hdr b", "a.id_do = b.id_do");
-        $this->db->join("tb_so_hdr c", "b.id_so = c.id_so");
-        $this->db->join("m_customers d", "b.id_customers = d.id_customers", "left");
-        $this->db->where("a.nbarcode", $barcode);
-        $this->db->where("c.flag_cancel", '0');
-        $this->db->order_by("a.id_do_dtl", "desc");
-        $this->db->limit(1);
+        $count = $this->db->count_all_results('', false);
+        $count = intval($count);
 
         $query = $this->db->get();
-        if ($query->num_rows() > 0) {
-            return $query->row_array();
-        } else {
-            return false; 
-        }
+
+        return array(
+            'data' => $query,
+            'total' => $count,
+        );
     }
+
+    // public function totsparepart($lkt_code)
+    // {
+    //     $this->db->select("SUM(CASE WHEN f_cancel = 0 THEN total ELSE 0 END) as total", false);
+    //     $this->db->from('tb_trans_swo_part_actual');
+    //     $this->db->where('lkt_code', $lkt_code);
+
+    //     $count = $this->db->count_all_results('', false);
+    //     $count = intval($count);
+
+    //     $query = $this->db->get();
+
+    //     return array(
+    //         'data' => $query,
+    //         'total' => $count,
+    //     );
+    // }
 
     public function data_kategori()
     {
@@ -241,50 +292,67 @@ class Mmaster extends CI_Model
         return $this->db->get('m_product_sub_kategori');
     }
 
-    public function insert($NewID, $t_d, $d_r, $sn_number, $warranty, $product, $sts_pasang, $do_code, $mesin_lama, $csr_by, $csr_input, $tambahthn, $stat_csr, $customers, $requestor, $lokasi, $lap_kerusakan, $link_foto)
+    public function insert($id_product, $product_code, $nm_product, $deskripsi, $id_category, $id_sub_category, $id_satuan,  $id_brand, $reference)
     {
+
         $data = array(
-            'csr_code' => $NewID,
-            'csr_date' => $d_r,
-            'id_customers' => $customers,
-            'id_karyawan' => $requestor,
-            'barcode' => $sn_number,
-            'do_code' => $do_code,
-            'waranty_start' => $t_d,
-            'waranty_time' => $warranty,
-            'waranty_end' => $tambahthn,
-            'lap_kerusakan' => $lap_kerusakan,
-            'id_product' => $product,
-            'lokasi' => $lokasi,
-            'csr_input_date' => $csr_input,
-            'csr_by' => $csr_by,
-            'csr_status' => $stat_csr,
-            'sts_pasang' => $sts_pasang,
-            'mesin_lama' => $mesin_lama,
-            'image' => $link_foto
-
+            'id_product' => $id_product,
+            'code_product' => $product_code,
+            'nm_product' => $nm_product,
+            'product_deskripsi' => $deskripsi,
+            'id_product_kategori' => $id_category,
+            'id_product_sub_kategori' => $id_sub_category,
+            'id_product_satuan' => $id_satuan,
+            'id_product_brand' => $id_brand,
+            'product_refference' => $reference,
+            'date_create' => current_datetime(),
         );
-        $this->db->insert('tb_afs_csr', $data);
 
-        // Tambahkan baris awal ke tb_afs_cst dengan cst_code = 'kosong'
-        $id_afs_csr = $this->db->insert_id();
-        $data_cst = array(
-            'id_afs_csr' => $id_afs_csr,
-            'cst_code' => 'kosong',
-            'cst_date' => null,
-            'status' => null
-        );
-        $this->db->insert('tb_afs_cst', $data_cst);
+        $this->db->insert('m_product', $data);
     }
 
-    public function data_header($id_karyawan)
+    public function update(
+        $id_product,
+        $code_product,
+        $nm_product,
+        $id_product_kategori,
+        $product_deskripsi,
+        $id_product_sub_kategori,
+        $id_product_satuan,
+        $id_product_brand,
+        $product_refference
+    ) {
+
+        $data = array(
+            'id_product' => $id_product,
+            'code_product' => $code_product,
+            'nm_product' => $nm_product,
+            'id_product_kategori' => $id_product_kategori,
+            'product_deskripsi' => $product_deskripsi,
+            'id_product_sub_kategori' => $id_product_sub_kategori,
+            'id_product_satuan' => $id_product_satuan,
+            'id_product_brand' => $id_product_brand,
+            'product_refference' => $product_refference,
+            'date_update' => current_datetime(),
+        );
+
+        $this->db->where('id_product', $id_product);
+        $this->db->update('m_product', $data);
+    }
+
+    public function data_header($id_product)
     {
-        return $this->db->query("select * from m_karyawan where id_karyawan = '$id_karyawan'");
+        return $this->db->query("select * from m_product where id_product = '$id_product'");
+    }
+
+    public function getAllProducts()
+    {
+        $query = $this->db->get('m_product');
+        return $query->result_array();
     }
 
     public function data_customers()
     {
-        $this->db->order_by('nm_customers', 'ASC');
         return $this->db->get('m_customers');
     }
 
@@ -295,7 +363,6 @@ class Mmaster extends CI_Model
 
     public function data_karyawan()
     {
-        $this->db->order_by('nm_karyawan', 'ASC');
         return $this->db->get('m_karyawan');
     }
 
@@ -305,219 +372,78 @@ class Mmaster extends CI_Model
     }
 
 
-    public function get_product_by_sn($sn_number)
+    public function updateCstclose($cst_code, $stat_csr, $status, $cst_approve_date, $approved_cst_by, $cst_done_date, $done_cst_by)
     {
-        $this->db->select('*');
-        $this->db->from('produk');
-        $this->db->where('sn_number', $sn_number);
-        $query = $this->db->get();
-
-        if ($query->num_rows() > 0) {
-            return $query->row();
-        } else {
-            return false;
-        }
-    }
-
-    public function update($csr_code, $customers, $csr_date, $id_karyawan,   $lap_kerusakan, $lokasi, $sts_pasang, $link_foto)
-    {
-        $data = array(
-            'id_customers' => $customers,
-            'csr_date' => $csr_date,
-            'id_karyawan' => $id_karyawan,
-            'lap_kerusakan' => $lap_kerusakan,
-            'lokasi' => $lokasi,
-            'sts_pasang' => $sts_pasang
-        );
-        if ($link_foto != null) {
-            $data['image'] = $link_foto;
-        }
-        $this->db->where('csr_code', $csr_code);
-        $this->db->update('tb_afs_csr', $data);
-    }
-
-    public function updateConfrimCSR($cst_code, $cst_date, $status, $approved_csr_by, $cst_input_date, $csr_code)
-    {
-        $this->db->select('id_afs_csr, csr_date');
-        $this->db->where('csr_code', $csr_code);
-        $query = $this->db->get('tb_afs_csr');
-        $row = $query->row();
-        
-        if ($row && strtotime($cst_date) < strtotime($row->csr_date)) {
-            return false; 
-        }
-
-        $data = array(
-            'csr_status' => $status,
-            'approved_csr_by' => $approved_csr_by,
-            'csr_approve_date' => $cst_input_date
+        // Update status CST di tb_afs_cst
+        $data_cst = array(
+            'status'           => $status,
+            'cst_approve_date' => $cst_approve_date,
+            'approved_cst_by'  => $approved_cst_by,
+            'done_cst_by'      => $done_cst_by,
+            'cst_done_date'    => $cst_done_date,
         );
 
-        $this->db->where('csr_code', $csr_code);
-        $this->db->update('tb_afs_csr', $data);
+        $this->db->where('cst_code', $cst_code);
+        $this->db->update('tb_afs_cst', $data_cst);
+        $affected = $this->db->affected_rows();
 
-        // $data3 = array(
-        //     'mobile_number' => $mobile_cust,
-        //     'message' => $message_tic,
-        //     'username_create' => $wa_by,
-        //     'flag_status' => $flag_status,
-        //     'date_create' => $translog_date_cus,
-        //     'date_update' => $translog_date_cus,
-        //     'flag_group' => $flag_group_2
-        // );
-        // $this->db->insert('tb_message_wa', $data3);
-        
-        if ($row && isset($row->id_afs_csr)) {
-            $id_afs_csr = $row->id_afs_csr;
-            $data_cst = array(
-                'cst_code' => $cst_code,
-                'cst_date' => date('Y-m-d', strtotime($cst_date)),
-                'status'   => $status
-            );
+        // Update csr_status di tb_afs_csr melalui relasi id_afs_csr
+        $row = $this->db->query(
+            "SELECT id_afs_csr FROM tb_afs_cst WHERE cst_code = ?",
+            array($cst_code)
+        )->row();
 
-            // Cari apakah ada baris CST yang masih 'kosong' atau baris terbaru yang tidak dibatalkan
-            $this->db->where('id_afs_csr', $id_afs_csr);
-            $this->db->where_in('status', array(NULL, 'OUTSTANDING'));
-            $this->db->where('cst_code', 'kosong');
-            $cek_cst = $this->db->get('tb_afs_cst');
-
-            if ($cek_cst->num_rows() > 0) {
-                // Update baris placeholder 'kosong' yang ada
-                $this->db->where('id_afs_csr', $id_afs_csr);
-                $this->db->where('cst_code', 'kosong');
-                $this->db->update('tb_afs_cst', $data_cst);
-            } else {
-                // Jika tidak ada placeholder 'kosong' (mungkin sebelumnya sudah dibatalkan), 
-                // buat baris baru untuk mendukung "1 CSR bisa banyak CST"
-                $data_cst['id_afs_csr'] = $id_afs_csr;
-                $this->db->insert('tb_afs_cst', $data_cst);
-            }
-        }
-
-        return true;
-    }
-
-    public function updateCSRcancel($csr_code, $stat2, $memo)
-    {
-        $data = array(
-            'csr_status' => $stat2,
-            'f_cancel' => 1,
-            'alasan_cancel' => $memo
-        );
-
-        $this->db->where('csr_code', $csr_code);
-        $this->db->update('tb_afs_csr', $data);
-    }
-    // $data2 = array(
-    //     'mobile_number' => $mobile_number,
-    //     'message' => $message,
-    //     'username_create' => $wa_by,
-    //     'flag_status' => $flag_status,
-    //     'date_create' => $translog_date_cus,
-    //     'date_update' => $translog_date_cus,
-    //     'flag_group' => $flag_group
-    // );
-
-    // $this->db->insert('tb_message_wa', $data2);
-
-    public function ignoreCSR($csr_code, $cst_date, $status)
-    {
-        $this->db->select('id_afs_csr');
-        $this->db->where('csr_code', $csr_code);
-        $query = $this->db->get('tb_afs_csr');
-        $row = $query->row();
-
-        if ($row && isset($row->id_afs_csr)) {
-            $data = array(
-                'status' => $status,
-                'cst_date' => date('Y-m-d', strtotime($cst_date))
-            );
+        if ($row) {
+            $data_csr = array('csr_status' => $stat_csr);
             $this->db->where('id_afs_csr', $row->id_afs_csr);
-            return $this->db->update('tb_afs_cst', $data);
+            $this->db->update('tb_afs_csr', $data_csr);
         }
-        
-        return false;
+
+        return $affected;
     }
 
-    public function wa1($id_wa, $mobile_number, $message, $wa_by, $flag_status, $translog_date_cus, $flag_group)
+    public function updateCSTcancel($cst_code)
     {
-        $data = array(
-            'id_message_wa' => $id_wa,
-            'mobile_number' => $mobile_number,
-            'message' => $message,
-            'username_create' => $wa_by,
-            'flag_status' => $flag_status,
-            'date_create' => $translog_date_cus,
-            'date_update' => $translog_date_cus,
-            'flag_group' => $flag_group,
-        );
+        // Ambil id_afs_csr dari cst_code di tb_afs_cst
+        $row = $this->db->query(
+            "SELECT id_afs_csr FROM tb_afs_cst WHERE cst_code = ?",
+            array($cst_code)
+        )->row();
 
-        $this->db->insert('tb_message_wa', $data);
+        if ($row) {
+            $this->db->set('csr_status', 'OUTSTANDING');
+            $this->db->set('f_cancel', '0');
+            $this->db->where('id_afs_csr', $row->id_afs_csr);
+            $this->db->update('tb_afs_csr');
+
+            $this->db->set('status', 'CANCEL');
+            $this->db->where('cst_code', $cst_code);
+            $this->db->update('tb_afs_cst');
+        }
     }
-    public function wa2($id_wa, $mobile_cust, $message_tic, $wa_by, $flag_status, $translog_date_cus, $flag_group2)
+
+    public function check_lkt_done($cst_code)
     {
-        $data = array(
-            'id_message_wa' => $id_wa,
-            'mobile_number' => $mobile_cust,
-            'message' => $message_tic,
-            'username_create' => $wa_by,
-            'flag_status' => $flag_status,
-            'date_create' => $translog_date_cus,
-            'date_update' => $translog_date_cus,
-            'flag_group' => $flag_group2,
-        );
-
-        $this->db->insert('tb_message_wa', $data);
+        return $this->db->query("
+            SELECT COUNT(a.lkt_code) AS jml
+            FROM tb_afs_lkt a
+            JOIN tb_afs_cst b ON a.id_afs_cst = b.id_afs_cst
+            WHERE b.cst_code = ? AND a.flag_done = 'DONE' AND a.f_cancel = 0", array($cst_code))->row()->jml;
     }
-
 
     public function translog($id_log, $translog_date, $kode_trans, $user_log, $action_log, $table_name, $form_log)
     {
         $data = array(
             'id_trans_swo_log' => $id_log,
-            'translog_date' => $translog_date,
-            'kode_trans' => $kode_trans,
-            'user_id' => $user_log,
-            'action' => $action_log,
-            'table_name' => $table_name,
-            'form' => $form_log,
+            'translog_date'    => $translog_date,
+            'kode_trans'       => $kode_trans,
+            'user_id'          => $user_log,
+            'action'           => $action_log,
+            'table_name'       => $table_name,
+            'form'             => $form_log,
         );
 
         $this->db->insert('tb_trans_swo_log', $data);
     }
-    public function add_new_cst($csr_code)
-    {
-        $this->db->select('id_afs_csr');
-        $this->db->where('csr_code', $csr_code);
-        $query = $this->db->get('tb_afs_csr');
-        $row = $query->row();
-
-        if ($row) {
-            $id_afs_csr = $row->id_afs_csr;
-
-            $today = date('Y');
-            $todayM = date('m');
-            $this->db->select('MAX(SUBSTRING(cst_code, 17, 5)) AS maxKode');
-            $this->db->where('SUBSTRING(cst_code, 9, 4) =', $today);
-            $this->db->where('SUBSTRING(cst_code, 14, 2) =', $todayM);
-            $query_cst = $this->db->get('tb_afs_cst');
-            $result3 = $query_cst->row_array();
-            $noUrut3 = (int) $result3['maxKode'];
-            $noUrut3++;
-            $cst_code = 'CST-EMM' . '/' . $today . '/' . $todayM . '/' . sprintf('%05s', $noUrut3);
-
-            $data_cst = array(
-                'id_afs_csr' => $id_afs_csr,
-                'cst_code' => $cst_code,
-                'cst_date' => date('Y-m-d'),
-                'status'   => 'OUTSTANDING'
-            );
-            $this->db->insert('tb_afs_cst', $data_cst);
-            return $cst_code;
-        }
-        return false;
-    }
 }
-
-
 /* End of file Mmaster.php */

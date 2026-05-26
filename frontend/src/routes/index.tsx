@@ -10,6 +10,10 @@ import CsrListPage from '../modules/csr/pages/CsrListPage'
 import CsrFormPage from '../modules/csr/pages/CsrAddPage'
 import CsrEditPage from '../modules/csr/pages/CsrEditPage'
 
+// CST Pages
+import CstListPage from '../modules/cst/pages/CstListPage'
+import CstEditPage from '../modules/cst/pages/CstEditPage'
+
 export default function AppRouter() {
     return (
         <BrowserRouter>
@@ -37,6 +41,10 @@ export default function AppRouter() {
                                     <Route path="/csr" element={<CsrListPage />} />
                                     <Route path="/csr/create" element={<CsrFormPage />} />
                                     <Route path="/csr/:code/edit" element={<CsrEditPage />} />
+
+                                    {/* CST Routes */}
+                                    <Route path="/cst" element={<CstListPage />} />
+                                    <Route path="/cst/:code/edit" element={<CstEditPage />} />
                                 </Routes>
                             </MainLayout>
                         </ProtectedRoute>

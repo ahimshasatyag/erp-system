@@ -34,6 +34,17 @@ export default function Breadcrumb() {
       steps.push({ label: 'Customer Request (CSR)', path: '/csr' });
       steps.push({ label: `Edit ${formattedCode}` });
     }
+    // CST List
+    else if (pathname === '/cst') {
+      steps.push({ label: 'Customer Service Ticket (CST)' });
+    }
+    // CST Edit/Detail Route
+    else if (pathname.startsWith('/cst/') && pathname.endsWith('/edit')) {
+      const code = pathname.split('/')[2];
+      const formattedCode = code.replace(/\./g, '/');
+      steps.push({ label: 'Customer Service Ticket (CST)', path: '/cst' });
+      steps.push({ label: `Detail ${formattedCode}` });
+    }
     // Dynamic Fallback
     else {
       const segments = pathname.split('/').filter(Boolean)

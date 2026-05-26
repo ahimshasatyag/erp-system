@@ -25,4 +25,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('csr', \App\Http\Controllers\API\csr\Cform::class)->parameters([
         'csr' => 'csr_code'
     ]);
+
+    // CST Module
+    Route::post('/cst/close', [\App\Http\Controllers\API\cst\Cform::class, 'close']);
+    Route::post('/cst/cancel', [\App\Http\Controllers\API\cst\Cform::class, 'cancel']);
+    Route::apiResource('cst', \App\Http\Controllers\API\cst\Cform::class)->parameters([
+        'cst' => 'cst_code'
+    ]);
 });
