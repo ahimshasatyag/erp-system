@@ -32,4 +32,18 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('cst', \App\Http\Controllers\API\cst\Cform::class)->parameters([
         'cst' => 'cst_code'
     ]);
+
+    // LKT Module
+    Route::post('/lkt/confirm', [\App\Http\Controllers\API\lkt\Cform::class, 'confirm']);
+    Route::post('/lkt/close', [\App\Http\Controllers\API\lkt\Cform::class, 'close']);
+    Route::post('/lkt/cancel', [\App\Http\Controllers\API\lkt\Cform::class, 'cancel']);
+    Route::post('/lkt/visit', [\App\Http\Controllers\API\lkt\Cform::class, 'saveVisit']);
+    Route::get('/lkt/visit/{subCode}', [\App\Http\Controllers\API\lkt\Cform::class, 'getVisit']);
+    Route::post('/lkt/visit/cancel', [\App\Http\Controllers\API\lkt\Cform::class, 'cancelVisit']);
+    Route::post('/lkt/visit/{subCode}', [\App\Http\Controllers\API\lkt\Cform::class, 'updateVisit']);
+    Route::post('/lkt/part', [\App\Http\Controllers\API\lkt\Cform::class, 'savePart']);
+    Route::post('/lkt/part-visit', [\App\Http\Controllers\API\lkt\Cform::class, 'savePartVisit']);
+    Route::apiResource('lkt', \App\Http\Controllers\API\lkt\Cform::class)->parameters([
+        'lkt' => 'lkt_code'
+    ]);
 });

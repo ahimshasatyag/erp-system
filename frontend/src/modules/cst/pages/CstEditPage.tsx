@@ -143,7 +143,10 @@ export default function CstEditPage() {
                             <div className="flex justify-start">
                                 <button
                                     type="button"
-                                    onClick={() => showAlert.info('Info', 'Add New LKT module coming soon')}
+                                    onClick={() => {
+                                        const cleanCstCode = (cst.cst_code || '').replace(/\//g, '.');
+                                        navigate(`/lkt/create/${cleanCstCode}`);
+                                    }}
                                     className="bg-[#1ab394] hover:bg-[#18a689] text-white px-3 py-1.5 rounded text-xs font-bold flex items-center gap-1 shadow-sm transition-colors cursor-pointer"
                                 >
                                     <span className="text-sm leading-none font-extrabold">+</span> Add New

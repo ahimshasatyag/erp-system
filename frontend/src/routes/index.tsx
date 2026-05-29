@@ -14,6 +14,13 @@ import CsrEditPage from '../modules/csr/pages/CsrEditPage'
 import CstListPage from '../modules/cst/pages/CstListPage'
 import CstEditPage from '../modules/cst/pages/CstEditPage'
 
+// LKT Pages
+import LktListPage from '../modules/lkt/pages/LktListPage'
+import LktAddPage from '../modules/lkt/pages/LktAddPage'
+import LktEditPage from '../modules/lkt/pages/LktEditPage'
+import LktRealisasiAddPage from '../modules/lkt/pages/LktRealisasiAddPage'
+import LktRealisasiEditPage from '../modules/lkt/pages/LktRealisasiEditPage'
+
 export default function AppRouter() {
     return (
         <BrowserRouter>
@@ -45,6 +52,13 @@ export default function AppRouter() {
                                     {/* CST Routes */}
                                     <Route path="/cst" element={<CstListPage />} />
                                     <Route path="/cst/:code/edit" element={<CstEditPage />} />
+
+                                    {/* LKT Routes */}
+                                    <Route path="/lkt" element={<LktListPage />} />
+                                    <Route path="/lkt/create/:cstCode" element={<LktAddPage />} />
+                                    <Route path="/lkt/:code/edit" element={<LktEditPage />} />
+                                    <Route path="/lkt/realisasi/create/:lktCode" element={<LktRealisasiAddPage />} />
+                                    <Route path="/lkt/realisasi/:subCode/edit" element={<LktRealisasiEditPage />} />
                                 </Routes>
                             </MainLayout>
                         </ProtectedRoute>
