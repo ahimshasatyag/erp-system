@@ -61,7 +61,6 @@ export default function LktRealisasiListPage({ lktCode, visits, lktStatus, isLkt
         <div className="space-y-4">
             {/* Header row with Add New button */}
             <div className="flex justify-between items-center">
-                <h4 className="text-base font-bold text-gray-800">Daftar Kunjungan Realisasi</h4>
                 {showAddButton && (
                     <button
                         type="button"
@@ -82,56 +81,54 @@ export default function LktRealisasiListPage({ lktCode, visits, lktStatus, isLkt
                     <thead className="bg-[#f3f3f4] border-b border-[#e7eaec] text-gray-700 font-bold">
                         <tr>
                             <th className="py-2.5 px-4 text-center border-r border-[#e7eaec] w-12">No</th>
-                            <th className="py-2.5 px-4 text-center border-r border-[#e7eaec] w-20">ID Visit</th>
-                            <th className="py-2.5 px-4 text-center border-r border-[#e7eaec] w-28">Tgl Visit</th>
+                            <th className="py-2.5 px-4 text-center border-r border-[#e7eaec] w-24">LKT</th>
+                            <th className="py-2.5 px-4 text-center border-r border-[#e7eaec] w-24">CST</th>
+                            <th className="py-2.5 px-4 text-center border-r border-[#e7eaec] w-28">St Date</th>
+                            <th className="py-2.5 px-4 text-left border-r border-[#e7eaec]">Customers</th>
                             <th className="py-2.5 px-4 text-left border-r border-[#e7eaec]">Keterangan</th>
-                            <th className="py-2.5 px-4 text-right border-r border-[#e7eaec] w-32">Jasa</th>
-                            <th className="py-2.5 px-4 text-right border-r border-[#e7eaec] w-32">Transport</th>
-                            <th className="py-2.5 px-4 text-right border-r border-[#e7eaec] w-32">Akomodasi</th>
-                            <th className="py-2.5 px-4 text-right border-r border-[#e7eaec] w-32">Total</th>
+                            <th className="py-2.5 px-4 text-right border-r border-[#e7eaec] w-24">Training</th>
+                            <th className="py-2.5 px-4 text-right border-r border-[#e7eaec] w-24">Bongkar</th>
+                            <th className="py-2.5 px-4 text-center border-r border-[#e7eaec] w-20">Daring</th>
                             <th className="py-2.5 px-4 text-center border-r border-[#e7eaec] w-28">Status</th>
-                            <th className="py-2.5 px-4 text-center w-28">Aksi</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-[#e7eaec]">
                         {visits.length > 0 ? (
                             visits.map((visit: any, idx: number) => {
-                                const isDraft = visit.status?.toUpperCase() === 'DRAFT';
-                                const isCancelled = Number(visit.f_cancel) === 1;
-
                                 return (
                                     <tr key={visit.id_afs_realisasi || idx} className="hover:bg-gray-50/50 transition-colors">
                                         <td className="py-2.5 px-4 text-center border-r border-[#e7eaec] text-gray-500 font-medium">{idx + 1}</td>
-                                        <td className="py-2.5 px-4 text-center border-r border-[#e7eaec] font-bold text-gray-900">{visit.lkt_sub_code}</td>
+                                        <td className="py-2.5 px-4 text-center border-r border-[#e7eaec] font-bold">
+                                            <a
+                                                href="#"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    const subCode = visit.lkt_sub_code || visit.id_visit || '';
+                                                    const lktQuery = visit.lkt_code ? `lkt=${visit.lkt_code.replace(/\//g, '.')}` : '';
+                                                    const queryStr = lktQuery ? `?${lktQuery}` : '';
+                                                    navigate(`/lkt/realisasi/${String(subCode).replace(/\//g, '.')}/edit${queryStr}`);
+                                                }}
+                                                className="text-[#1ab394] hover:text-[#18a689] hover:underline cursor-pointer"
+                                            >
+                                                {visit.lkt_code && visit.lkt_code.length > 16 ? visit.lkt_code.substring(16) : (visit.lkt_sub_code || visit.lkt_code || '-')}
+                                            </a>
+                                        </td>
+                                        <td className="py-2.5 px-4 text-center border-r border-[#e7eaec] text-gray-700">
+                                            {visit.cst_code && visit.cst_code.length > 16 ? visit.cst_code.substring(16) : (visit.cst_code || '-')}
+                                        </td>
                                         <td className="py-2.5 px-4 text-center border-r border-[#e7eaec] text-gray-600 font-medium">{formatDate(visit.actual_starting_date)}</td>
+                                        <td className="py-2.5 px-4 border-r border-[#e7eaec] text-left text-gray-800 truncate" title={visit.nm_customers}>{visit.nm_customers || '-'}</td>
                                         <td className="py-2.5 px-4 border-r border-[#e7eaec] text-left text-gray-800 whitespace-pre-wrap max-w-xs overflow-hidden text-ellipsis">{visit.actual_description || '-'}</td>
-                                        <td className="py-2.5 px-4 text-right border-r border-[#e7eaec] font-mono text-gray-700">Rp {Number(visit.actual_service_amount || 0).toLocaleString('id-ID')}</td>
-                                        <td className="py-2.5 px-4 text-right border-r border-[#e7eaec] font-mono text-gray-700">Rp {Number(visit.actual_transport_amount || 0).toLocaleString('id-ID')}</td>
-                                        <td className="py-2.5 px-4 text-right border-r border-[#e7eaec] font-mono text-gray-700">Rp {Number(visit.actual_accommodation_amount || 0).toLocaleString('id-ID')}</td>
-                                        <td className="py-2.5 px-4 text-right border-r border-[#e7eaec] font-mono font-semibold text-gray-900">Rp {Number(visit.actual_tot_detail_amount || 0).toLocaleString('id-ID')}</td>
-                                        <td className="py-2.5 px-4 text-center border-r border-[#e7eaec]">{getStatusBadge(visit.status, visit.f_cancel)}</td>
-                                        <td className="py-2 px-4 text-center">
-                                            {!isCancelled && isDraft ? (
-                                                <div className="flex gap-1 justify-center">
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => navigate(`/lkt/realisasi/${visit.lkt_sub_code}/edit`)}
-                                                        className="bg-[#f0ad4e] hover:bg-[#ec971f] text-white px-2 py-0.5 rounded-[2px] text-[10px] font-semibold border border-[#eea236] cursor-pointer"
-                                                    >
-                                                        Edit
-                                                    </button>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => handleCancelVisit(visit.lkt_sub_code)}
-                                                        className="bg-[#d9534f] hover:bg-[#c9302c] text-white px-2 py-0.5 rounded-[2px] text-[10px] font-semibold border border-[#d43f3a] cursor-pointer"
-                                                    >
-                                                        Cancel
-                                                    </button>
-                                                </div>
+                                        <td className="py-2.5 px-4 text-right border-r border-[#e7eaec] font-mono text-gray-700">{Number(visit.actual_training || 0).toLocaleString('id-ID')}</td>
+                                        <td className="py-2.5 px-4 text-right border-r border-[#e7eaec] font-mono text-gray-700">{Number(visit.actual_bongkar || 0).toLocaleString('id-ID')}</td>
+                                        <td className="py-2.5 px-4 text-center border-r border-[#e7eaec]">
+                                            {Number(visit.flag_daring) === 1 ? (
+                                                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-green-50 text-green-600 border border-green-200">Daring</span>
                                             ) : (
-                                                <span className="text-gray-400">-</span>
+                                                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-gray-50 text-gray-600 border border-gray-200">Tidak</span>
                                             )}
                                         </td>
+                                        <td className="py-2.5 px-4 text-center border-r border-[#e7eaec]">{getStatusBadge(visit.status, visit.f_cancel)}</td>
                                     </tr>
                                 );
                             })

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import LktForm from '../forms/LktForm';
@@ -18,7 +18,14 @@ import { lktSchema, type LktSchemaInput } from '../validation/lktSchema';
 export default function LktEditPage() {
     const { code } = useParams<{ code: string }>();
     const navigate = useNavigate();
-    const [isEditing, setIsEditing] = useState(false);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const isEditing = searchParams.get('mode') === 'edit';
+    const setIsEditing = (edit: boolean) => {
+        const newParams = new URLSearchParams(searchParams);
+        if (edit) newParams.set('mode', 'edit');
+        else newParams.delete('mode');
+        setSearchParams(newParams);
+    };
     const [activeTab, setActiveTab] = useState<'perbaikan' | 'realisasi'>('perbaikan');
 
     // Spare part input fields state
@@ -239,7 +246,7 @@ export default function LktEditPage() {
                     </div>
                 </div>
                 <div className="text-[13px] text-gray-500 font-medium pt-1">
-                    EMM Service / LKT / Detail LKT
+                    EMM Service / LKT / {isEditing ? 'Edit' : 'Detail'} LKT
                 </div>
             </div>
 

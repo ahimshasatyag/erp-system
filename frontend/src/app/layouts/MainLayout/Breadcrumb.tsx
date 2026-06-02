@@ -34,6 +34,58 @@ export default function Breadcrumb() {
       steps.push({ label: 'Customer Request (CSR)', path: '/csr' });
       steps.push({ label: `Edit ${formattedCode}` });
     }
+    // LKT List
+    else if (pathname === '/lkt') {
+      steps.push({ label: 'Laporan Kunjungan Teknis (LKT)' });
+    }
+    // LKT Add
+    else if (pathname === '/lkt/create') {
+      steps.push({ label: 'Laporan Kunjungan Teknis (LKT)', path: '/lkt' });
+      steps.push({ label: 'Tambah' });
+    }
+    // LKT Realisasi Add Route
+    else if (pathname.startsWith('/lkt/realisasi/create/')) {
+      const code = pathname.split('/')[4] || '';
+      const formattedCode = code.replace(/\./g, '/');
+      steps.push({ label: 'Laporan Kunjungan Teknisi (LKT)', path: '/lkt' });
+      steps.push({ label: `Detail ${formattedCode}`, path: `/lkt/${code}/edit` });
+      steps.push({ label: 'Create' });
+    }
+    // LKT Realisasi Edit/Detail Route
+    else if (pathname.startsWith('/lkt/realisasi/') && pathname.endsWith('/edit')) {
+      const subCode = pathname.split('/')[3] || '';
+      const parts = subCode.split('.');
+      const noUrut = parts.pop() || '';
+      
+      const searchParams = new URLSearchParams(location.search);
+      const paramLkt = searchParams.get('lkt');
+      
+      let lktCode = paramLkt || parts.join('.');
+      if (lktCode.startsWith('RS-')) {
+        lktCode = 'LKT-' + lktCode.substring(3);
+      }
+      const formattedLktCode = lktCode ? lktCode.replace(/\./g, '/') : '';
+      
+      const mode = searchParams.get('mode') || 'detail';
+      const isEditing = mode === 'edit';
+
+      steps.push({ label: 'Laporan Kunjungan Teknisi (LKT)', path: '/lkt' });
+      if (formattedLktCode) {
+        steps.push({ label: `Detail ${formattedLktCode}`, path: `/lkt/${lktCode}/edit` });
+      }
+      steps.push({ label: `${isEditing ? 'Edit' : 'Detail'} Realisasi ${noUrut}` });
+    }
+    // LKT Edit/Detail Route
+    else if (pathname.startsWith('/lkt/') && pathname.endsWith('/edit')) {
+      const parts = pathname.split('/');
+      const code = parts[2];
+      const cstCode = parts[3] ? parts[3].replace(/\./g, '/') : '';
+      const mode = new URLSearchParams(location.search).get('mode') || 'detail';
+      const isEditing = mode === 'edit';
+
+      steps.push({ label: 'Laporan Kunjungan Teknisi (LKT)', path: '/lkt' });
+      steps.push({ label: `${isEditing ? 'Edit' : 'Detail'} ${code.replace(/\./g, '/')}` });
+    }
     // CST List
     else if (pathname === '/cst') {
       steps.push({ label: 'Customer Service Ticket (CST)' });

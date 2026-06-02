@@ -170,7 +170,11 @@ class Cform extends Controller
     {
         $products = \Illuminate\Support\Facades\DB::table('m_product')->select('id_product', 'code_product', 'nm_product')->get();
         $customers = \Illuminate\Support\Facades\DB::table('m_customers')->select('id_customers', 'nm_customers', 'customers_address', 'provinsi')->get();
-        $karyawan = \Illuminate\Support\Facades\DB::table('m_karyawan')->select('id_karyawan', 'nm_karyawan')->get();
+        $karyawan = \Illuminate\Support\Facades\DB::table('m_karyawan')
+            ->leftJoin('m_karyawan_divisi', 'm_karyawan.id_karyawan_divisi', '=', 'm_karyawan_divisi.id_karyawan_divisi')
+            ->where('m_karyawan_divisi.nm_karyawan_divisi', 'Services')
+            ->select('m_karyawan.id_karyawan', 'm_karyawan.nm_karyawan', 'm_karyawan_divisi.nm_karyawan_divisi as divisi')
+            ->get();
 
         return response()->json([
             'products' => $products,
