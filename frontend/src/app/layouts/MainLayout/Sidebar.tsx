@@ -1,4 +1,4 @@
-import { useState, useEffect, type ReactNode } from 'react'
+import { useState, useEffect, useRef, useMemo, type ReactNode } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import logo from '../../../assets/logo.png'
 import logoSquare from '../../../assets/logos.jpg'
@@ -80,28 +80,39 @@ export default function Sidebar({ isOpen, onClose, isCollapsed }: SidebarProps) 
   const { data: menuItems = [], isLoading } = useSidebarMenus()
 
   // Prepend static Dashboard menu item if it doesn't already exist in the database menu list
-  const hasDashboard = menuItems.some(item => item.title.toLowerCase() === 'dashboard')
-  const finalMenuItems = hasDashboard
-    ? menuItems
-    : [
-      {
-        title: 'Dashboard',
-        path: '/',
-        icon: 'dashboardIcon',
-        submenu: null
-      },
-      ...menuItems
-    ]
+  const finalMenuItems = useMemo(() => {
+    const hasDashboard = menuItems.some(item => item.title.toLowerCase() === 'dashboard')
+    return hasDashboard
+      ? menuItems
+      : [
+        {
+          title: 'Dashboard',
+          path: '/',
+          icon: 'dashboardIcon',
+          submenu: null
+        },
+        ...menuItems
+      ]
+  }, [menuItems])
+
+  const lastAutoOpenedPath = useRef<string | null>(null)
 
   // Auto-open active group on load or path changes
   useEffect(() => {
-    const activeItem = finalMenuItems.find(item =>
-      item.submenu?.some(sub => checkIsActive(sub.path))
-    )
-    if (activeItem) {
-      setActiveGroup(activeItem.title)
+    if (isLoading || finalMenuItems.length === 0) return;
+
+    if (lastAutoOpenedPath.current !== currentPath) {
+      const activeItem = finalMenuItems.find(item =>
+        item.submenu?.some(sub => checkIsActive(sub.path))
+      )
+      if (activeItem) {
+        setActiveGroup(activeItem.title)
+      } else {
+        setActiveGroup(null)
+      }
+      lastAutoOpenedPath.current = currentPath
     }
-  }, [currentPath, finalMenuItems])
+  }, [currentPath, finalMenuItems, isLoading])
 
   // Close all open dropdowns when sidebar collapses (hamburger clicked)
   useEffect(() => {
@@ -213,6 +224,7 @@ export default function Sidebar({ isOpen, onClose, isCollapsed }: SidebarProps) 
                             <Link
                               key={idx}
                               to={resolvePath(sub.path)}
+                              onClick={onClose}
                               className={`block text-left px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-150 ${isSubActive
                                 ? 'text-[var(--primary)] bg-gray-100 font-bold dark:text-[var(--primary-container)] dark:bg-gray-800'
                                 : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800/40'
@@ -238,6 +250,7 @@ export default function Sidebar({ isOpen, onClose, isCollapsed }: SidebarProps) 
                               <Link
                                 key={idx}
                                 to={resolvePath(sub.path)}
+                                onClick={onClose}
                                 className={`block text-left px-6 py-2.5 rounded-md text-xs font-medium italic transition-colors duration-150 ${isSubActive
                                   ? 'text-[var(--primary)] bg-gray-50 font-bold dark:text-[var(--primary-container)] dark:bg-gray-800/60'
                                   : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800/40'
@@ -256,6 +269,7 @@ export default function Sidebar({ isOpen, onClose, isCollapsed }: SidebarProps) 
                   <>
                     <Link
                       to={resolvePath(item.path)}
+                      onClick={onClose}
                       className={`group flex items-center transition-all duration-200 ${
                         isCollapsed
                           ? 'mx-auto w-10 h-10 justify-center rounded-lg'
