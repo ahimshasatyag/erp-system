@@ -127,6 +127,10 @@ export default function Breadcrumb() {
       steps.push({ label: 'Log Book Customers', path: '/logbookcustomers' });
       steps.push({ label: `Edit ${id}` });
     }
+    // Cek Serial Number
+    else if (pathname === '/cekserialnumber') {
+      steps.push({ label: 'Cek Serial Number' });
+    }
     // Dynamic Fallback
     else {
       const segments = pathname.split('/').filter(Boolean)

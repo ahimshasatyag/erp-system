@@ -58,4 +58,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Log Book Product Module
     Route::apiResource('log-books', \App\Http\Controllers\API\logbookproduct\LogBookProductController::class);
+
+    // Cek Serial Number Module
+    Route::get('/cekserialnumber', [\App\Http\Controllers\API\cekserialnumber\Cform::class, 'index']);
+    Route::get('/cekserialnumber/{barcode}', [\App\Http\Controllers\API\cekserialnumber\Cform::class, 'detail_serial']);
 });

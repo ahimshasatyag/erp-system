@@ -7,14 +7,17 @@ use App\Models\User;
 
 class LogBookProductPolicy
 {
+    private const MENU_ID = '10601';
+
     /**
-     * In CodeIgniter, `check_role($this->id_menu, 2)` checked read access.
+     * Check if user can view any Log Book Product records.
      */
     public function viewAny(User $user): bool
     {
-        // Replace with your actual role checking logic, e.g.:
-        // return $user->hasRoleForMenu('10601', 2);
-        return true;
+        if (method_exists($user, 'hasMenuReadAccess')) {
+            return $user->hasMenuReadAccess(self::MENU_ID);
+        }
+        return false;
     }
 
     /**
@@ -22,33 +25,42 @@ class LogBookProductPolicy
      */
     public function view(User $user, LogBookProduct $logBookProduct): bool
     {
-        return $this->viewAny($user);
+        if (method_exists($user, 'hasMenuReadAccess')) {
+            return $user->hasMenuReadAccess(self::MENU_ID);
+        }
+        return false;
     }
 
     /**
-     * In CodeIgniter, `check_role($this->id_menu, 1)` checked create access.
+     * Check if user can create a new Log Book Product record.
      */
     public function create(User $user): bool
     {
-        // return $user->hasRoleForMenu('10601', 1);
-        return true;
+        if (method_exists($user, 'hasMenuCreateAccess')) {
+            return $user->hasMenuCreateAccess(self::MENU_ID);
+        }
+        return false;
     }
 
     /**
-     * In CodeIgniter, `check_role($this->id_menu, 3)` checked update access.
+     * Check if user can update a Log Book Product record.
      */
     public function update(User $user, LogBookProduct $logBookProduct): bool
     {
-        // return $user->hasRoleForMenu('10601', 3);
-        return true;
+        if (method_exists($user, 'hasMenuUpdateAccess')) {
+            return $user->hasMenuUpdateAccess(self::MENU_ID);
+        }
+        return false;
     }
 
     /**
-     * In CodeIgniter, `check_role($this->id_menu, 4)` checked delete access.
+     * Check if user can delete a Log Book Product record.
      */
     public function delete(User $user, LogBookProduct $logBookProduct): bool
     {
-        // return $user->hasRoleForMenu('10601', 4);
-        return true;
+        if (method_exists($user, 'hasMenuDeleteAccess')) {
+            return $user->hasMenuDeleteAccess(self::MENU_ID);
+        }
+        return false;
     }
 }

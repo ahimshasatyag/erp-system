@@ -31,6 +31,9 @@ import LogBookCustomerListPage from '../modules/logbookcustomers/pages/LogBookCu
 import LogBookCustomerAddPage from '../modules/logbookcustomers/pages/LogBookCustomerAddPage'
 import LogBookCustomerEditPage from '../modules/logbookcustomers/pages/LogBookCustomerEditPage'
 
+// Cek Serial Number Routes
+import CekSerialNumberPage from '../modules/cekserialnumber/pages/CekSerialNumberPage'
+
 export default function AppRouter() {
     return (
         <BrowserRouter>
@@ -79,6 +82,9 @@ export default function AppRouter() {
                                     <Route path="/logbookcustomers" element={<LogBookCustomerListPage />} />
                                     <Route path="/logbookcustomers/create" element={<LogBookCustomerAddPage />} />
                                     <Route path="/logbookcustomers/:id/edit" element={<LogBookCustomerEditPage />} />
+
+                                    {/* Cek Serial Number Routes */}
+                                    <Route path="/cekserialnumber" element={<CekSerialNumberPage />} />
                                 </Routes>
                             </MainLayout>
                         </ProtectedRoute>

@@ -8,4 +8,5 @@ return [
     App\Providers\logbookproduct\LogBookProductServiceProvider::class,
     App\Providers\logbookcustomers\LogBookCustomerServiceProvider::class,
     App\Providers\csr\CsrServiceProvider::class,
+    App\Providers\cekserialnumber\CekSerialNumberServiceProvider::class,
 ];
