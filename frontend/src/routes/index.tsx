@@ -26,6 +26,11 @@ import LogBookProductListPage from '../modules/logbookproduct/pages/LogBookProdu
 import LogBookProductAddPage from '../modules/logbookproduct/pages/LogBookProductAddPage'
 import LogBookProductEditPage from '../modules/logbookproduct/pages/LogBookProductEditPage'
 
+// LogBookCustomer Routes
+import LogBookCustomerListPage from '../modules/logbookcustomers/pages/LogBookCustomerListPage'
+import LogBookCustomerAddPage from '../modules/logbookcustomers/pages/LogBookCustomerAddPage'
+import LogBookCustomerEditPage from '../modules/logbookcustomers/pages/LogBookCustomerEditPage'
+
 export default function AppRouter() {
     return (
         <BrowserRouter>
@@ -69,6 +74,11 @@ export default function AppRouter() {
                                     <Route path="/logbookproduct" element={<LogBookProductListPage />} />
                                     <Route path="/logbookproduct/create" element={<LogBookProductAddPage />} />
                                     <Route path="/logbookproduct/:code/edit" element={<LogBookProductEditPage />} />
+
+                                    {/* LogBookCustomer Routes */}
+                                    <Route path="/logbookcustomers" element={<LogBookCustomerListPage />} />
+                                    <Route path="/logbookcustomers/create" element={<LogBookCustomerAddPage />} />
+                                    <Route path="/logbookcustomers/:id/edit" element={<LogBookCustomerEditPage />} />
                                 </Routes>
                             </MainLayout>
                         </ProtectedRoute>

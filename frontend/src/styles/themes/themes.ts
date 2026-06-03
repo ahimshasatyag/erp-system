@@ -124,6 +124,8 @@ export const lightTheme: Theme = {
       LOSE: "#9E9E9E",
       ONGOING: "#F5B716",
       OPEN: "#03A9F4",
+      OUTSTANDING: "#ff9800",
+      "IN PROGRESS": "#2196f3",
     },
   },
 };

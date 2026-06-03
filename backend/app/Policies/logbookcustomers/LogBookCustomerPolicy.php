@@ -1,16 +1,13 @@
 <?php
 
-namespace App\Policies\csr;
+namespace App\Policies\logbookcustomers;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Traits\Menu\HasMenuAccess;
 
-class CsrPolicy
+class LogBookCustomerPolicy
 {
-    // The HasMenuAccess trait must be used by the User model to work properly.
-    // So we will assume the User model uses it. If not, we can implement it here statically.
-    
-    const MENU_ID = '10603';
+    const MENU_ID = '10602';
 
     public function viewAny(Authenticatable $user): bool
     {
@@ -40,6 +37,14 @@ class CsrPolicy
     {
         if (method_exists($user, 'hasMenuUpdateAccess')) {
             return $user->hasMenuUpdateAccess(self::MENU_ID);
+        }
+        return false;
+    }
+
+    public function delete(Authenticatable $user): bool
+    {
+        if (method_exists($user, 'hasMenuDeleteAccess')) {
+            return $user->hasMenuDeleteAccess(self::MENU_ID);
         }
         return false;
     }

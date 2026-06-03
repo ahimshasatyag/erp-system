@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { theme } from '../../../styles/themes/themes';
 
 interface CsrTableProps {
     data: any[];
@@ -152,7 +153,12 @@ export default function CsrTable({ data, isLoading }: CsrTableProps) {
                                     </td>
                                     <td className="px-4 py-2 whitespace-nowrap">
                                         <Link to={editUrl}>
-                                            <span className="px-3 py-0.5 text-[11px] font-semibold text-white bg-[#2c3e50] rounded-full shadow-sm">{row.csr_status === 'DRAFT' ? 'Draft CSR' : row.csr_status}</span>
+                                            <span 
+                                                className="px-3 py-0.5 text-[11px] font-semibold text-white rounded-full shadow-sm"
+                                                style={{ backgroundColor: theme.colors.statusColors[row.csr_status as keyof typeof theme.colors.statusColors] || '#2c3e50' }}
+                                            >
+                                                {row.csr_status === 'DRAFT' ? 'Draft CSR' : row.csr_status}
+                                            </span>
                                         </Link>
                                     </td>
                                 </tr>

@@ -3,7 +3,7 @@
 namespace App\Actions\csr;
 
 use App\Models\csr\Mmaster;
-use App\Traits\HasCsrLog;
+use App\Traits\csr\HasCsrLog;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\UploadedFile;
 

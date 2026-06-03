@@ -112,6 +112,21 @@ export default function Breadcrumb() {
       steps.push({ label: 'Log Book Product', path: '/logbookproduct' });
       steps.push({ label: `Edit ${id}` });
     }
+    // LogBookCustomers List
+    else if (pathname === '/logbookcustomers') {
+      steps.push({ label: 'Log Book Customers' });
+    }
+    // LogBookCustomers Add
+    else if (pathname === '/logbookcustomers/create') {
+      steps.push({ label: 'Log Book Customers', path: '/logbookcustomers' });
+      steps.push({ label: 'Tambah' });
+    }
+    // LogBookCustomers Edit Route
+    else if (pathname.startsWith('/logbookcustomers/') && pathname.endsWith('/edit')) {
+      const id = pathname.split('/')[2];
+      steps.push({ label: 'Log Book Customers', path: '/logbookcustomers' });
+      steps.push({ label: `Edit ${id}` });
+    }
     // Dynamic Fallback
     else {
       const segments = pathname.split('/').filter(Boolean)

@@ -3,6 +3,7 @@ import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import type { LogBookProduct } from '../api/logBookProductApi';
 import type { ValidationErrors } from '../validation/logBookProductSchema';
+import SearchablePaginatedSelect from '../../../components/SearchablePaginatedSelect';
 
 interface LogBookProductFormProps {
     formData: LogBookProduct;
@@ -43,21 +44,16 @@ export const LogBookProductForm: React.FC<LogBookProductFormProps> = ({
                 <div className="flex items-center gap-4 flex-1">
                     <label className="text-sm font-semibold text-slate-600 w-28 shrink-0">Product Name</label>
                     <div className="flex-1">
-                        <select 
-                            className={`w-full rounded border text-sm px-3 py-2 outline-none transition-colors ${
-                                errors.id_product 
-                                    ? 'border-red-500 focus:border-red-500' 
-                                    : 'border-slate-300 focus:border-blue-500'
-                            }`}
-                            name="id_product" 
-                            value={formData.id_product} 
-                            onChange={handleChange as any}
-                        >
-                            <option value="">Select Product Name</option>
-                            <option value="1">QZYK-130C - Program-control Paper Cutter</option>
-                            <option value="2">Product B</option>
-                        </select>
-                        {errors.id_product && <p className="mt-1 text-xs text-red-500">{errors.id_product}</p>}
+                        <SearchablePaginatedSelect
+                            value={formData.id_product || ''}
+                            onChange={(val) => handleChange({ target: { name: 'id_product', value: String(val) } })}
+                            options={[
+                                { value: "1", label: "QZYK-130C - Program-control Paper Cutter" },
+                                { value: "2", label: "Product B" }
+                            ]}
+                            placeholder="Select Product Name"
+                            error={errors.id_product}
+                        />
                     </div>
                 </div>
 

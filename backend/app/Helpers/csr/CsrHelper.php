@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Helpers;
+namespace App\Helpers\csr;
 
 use Illuminate\Support\Facades\DB;
 

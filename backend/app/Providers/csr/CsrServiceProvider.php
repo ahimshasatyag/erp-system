@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Providers;
+namespace App\Providers\csr;
 
 use Illuminate\Support\ServiceProvider;
 use App\Models\csr\Mmaster;
-use App\Policies\CsrPolicy;
+use App\Policies\csr\CsrPolicy;
 use Illuminate\Support\Facades\Gate;
 
 class CsrServiceProvider extends ServiceProvider

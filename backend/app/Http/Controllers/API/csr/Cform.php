@@ -201,7 +201,7 @@ class Cform extends Controller implements HasMiddleware
             return response()->json(['status' => false, 'message' => 'CSR tidak ditemukan'], 404);
         }
 
-        $cstCode = \App\Helpers\CsrHelper::generateCstCode();
+        $cstCode = \App\Helpers\csr\CsrHelper::generateCstCode();
 
         \Illuminate\Support\Facades\DB::table('tb_afs_cst')->insert([
             'id_afs_csr' => $csr->id_afs_csr,

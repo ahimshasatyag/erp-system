@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\Menu;
+use App\Http\Controllers\API\logbookproduct\LogBookProductController;
+use App\Http\Controllers\API\logbookcustomers\LogBookCustomerController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/login', function () {
@@ -12,6 +14,10 @@ Route::get('/login', function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
+
+    // Log Book Customers
+    Route::get('/log-book-customers/form-data', [LogBookCustomerController::class, 'formData']);
+    Route::apiResource('log-book-customers', LogBookCustomerController::class);
 
     // Menu Dynamic Sidebar API
     Route::get('/menu/sidebar', [Menu::class, 'sidebar']);

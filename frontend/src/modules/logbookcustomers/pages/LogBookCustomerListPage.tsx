@@ -1,26 +1,26 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useLogBookProducts } from '../hooks/useLogBookProducts';
-import { LogBookProductTable } from '../components/LogBookProductTable';
+import { useLogBookCustomers } from '../hooks/useLogBookCustomers';
+import { LogBookCustomerTable } from '../components/LogBookCustomerTable';
 
-export default function LogBookProductListPage() {
-    const { logBooks, loading, error, deleteLogBook } = useLogBookProducts();
+export default function LogBookCustomerListPage() {
+    const { logBooks, loading, error } = useLogBookCustomers();
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
     const [entries, setEntries] = useState(10);
 
     const handleAddNew = () => {
-        navigate('/logbookproduct/create');
+        navigate('/logbookcustomers/create');
     };
 
     return (
         <div className="w-full min-h-screen py-2 px-6">
             <div className="flex justify-between items-center mb-6 pt-2">
                 {/* Title - Left */}
-                <p className="text-[32px] font-normal text-[#3f2a2a] tracking-tight">Daftar Log Book Product</p>
+                <p className="text-[32px] font-normal text-[#3f2a2a] tracking-tight">Daftar Log Book Customers</p>
 
                 {/* Breadcrumb - Right */}
-                <div className="text-[13px] text-gray-500 font-medium">EMM Service / Daftar Log Book Product / Daftar Log Book Product</div>
+                <div className="text-[13px] text-gray-500 font-medium">EMM Service / Log Book Customers / Daftar Log Book Customers</div>
             </div>
 
             <div className="bg-white rounded shadow-sm border border-gray-200">
@@ -38,7 +38,7 @@ export default function LogBookProductListPage() {
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 text-sm text-slate-600">
                             <div className="flex items-center gap-2">
                                 <span>Tampilkan</span>
-                                <select
+                                <select 
                                     className="border border-slate-300 rounded px-2 py-1 outline-none focus:border-blue-500 bg-white"
                                     value={entries}
                                     onChange={(e) => setEntries(Number(e.target.value))}
@@ -52,8 +52,8 @@ export default function LogBookProductListPage() {
                             </div>
                             <div className="flex items-center gap-2">
                                 <span>Cari:</span>
-                                <input
-                                    type="text"
+                                <input 
+                                    type="text" 
                                     className="border border-slate-300 rounded px-2 py-1 outline-none focus:border-blue-500 w-full sm:w-48"
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
@@ -68,8 +68,8 @@ export default function LogBookProductListPage() {
                         <div className="text-center py-8 text-slate-500">Loading...</div>
                     ) : (
                         <>
-                            <LogBookProductTable
-                                logBooks={logBooks}
+                            <LogBookCustomerTable
+                                data={logBooks}
                             />
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between text-sm text-slate-600 mt-4 gap-4">
                                 <div>Menampilkan 1 Sampai {logBooks.length} Dari {logBooks.length} data</div>
