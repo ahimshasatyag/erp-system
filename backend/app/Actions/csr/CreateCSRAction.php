@@ -8,6 +8,7 @@ use App\Traits\HasCsrLog;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Http\UploadedFile;
+use App\Enums\CsrStatusEnum;
 
 class CreateCSRAction
 {
@@ -59,7 +60,7 @@ class CreateCSRAction
                 'lokasi' => $data['lokasi'],
                 'csr_input_date' => now(),
                 'csr_by' => $userId,
-                'csr_status' => 'DRAFT',
+                'csr_status' => CsrStatusEnum::DRAFT->value,
                 'sts_pasang' => $data['sts_pasang'],
                 'mesin_lama' => $data['mesin_lama'] ?? null,
                 'image' => $imagePath

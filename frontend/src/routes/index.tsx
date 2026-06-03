@@ -21,6 +21,11 @@ import LktEditPage from '../modules/lkt/pages/LktEditPage'
 import LktRealisasiAddPage from '../modules/lkt/pages/LktRealisasiAddPage'
 import LktRealisasiEditPage from '../modules/lkt/pages/LktRealisasiEditPage'
 
+// LogBookProduct Routes
+import LogBookProductListPage from '../modules/logbookproduct/pages/LogBookProductListPage'
+import LogBookProductAddPage from '../modules/logbookproduct/pages/LogBookProductAddPage'
+import LogBookProductEditPage from '../modules/logbookproduct/pages/LogBookProductEditPage'
+
 export default function AppRouter() {
     return (
         <BrowserRouter>
@@ -59,6 +64,11 @@ export default function AppRouter() {
                                     <Route path="/lkt/:code/edit" element={<LktEditPage />} />
                                     <Route path="/lkt/realisasi/create/:lktCode" element={<LktRealisasiAddPage />} />
                                     <Route path="/lkt/realisasi/:subCode/edit" element={<LktRealisasiEditPage />} />
+
+                                    {/* LogBookProduct Routes */}
+                                    <Route path="/logbookproduct" element={<LogBookProductListPage />} />
+                                    <Route path="/logbookproduct/create" element={<LogBookProductAddPage />} />
+                                    <Route path="/logbookproduct/:code/edit" element={<LogBookProductEditPage />} />
                                 </Routes>
                             </MainLayout>
                         </ProtectedRoute>

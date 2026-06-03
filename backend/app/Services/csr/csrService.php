@@ -8,6 +8,7 @@ use App\Actions\csr\UpdateCSRAction;
 use Illuminate\Support\Facades\DB;
 use App\Traits\HasCsrLog;
 use App\Helpers\CsrHelper;
+use App\Enums\CsrStatusEnum;
 
 class csrService
 {
@@ -49,7 +50,7 @@ class csrService
             $cstCode = CsrHelper::generateCstCode();
             
             DB::table('tb_afs_csr')->where('csr_code', $csrCode)->update([
-                'csr_status' => 'OUTSTANDING',
+                'csr_status' => CsrStatusEnum::OUTSTANDING->value,
                 'approved_csr_by' => $userId,
                 'csr_approve_date' => now()
             ]);
@@ -89,7 +90,7 @@ class csrService
     {
         return DB::transaction(function () use ($csrCode, $customer, $product, $memo, $userId) {
             DB::table('tb_afs_csr')->where('csr_code', $csrCode)->update([
-                'csr_status' => 'CANCEL',
+                'csr_status' => CsrStatusEnum::CANCEL->value,
                 'f_cancel' => 1,
                 'alasan_cancel' => $memo
             ]);

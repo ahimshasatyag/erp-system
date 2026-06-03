@@ -20,6 +20,14 @@ class CsrPolicy
         return false;
     }
 
+    public function view(Authenticatable $user): bool
+    {
+        if (method_exists($user, 'hasMenuReadAccess')) {
+            return $user->hasMenuReadAccess(self::MENU_ID);
+        }
+        return false;
+    }
+
     public function create(Authenticatable $user): bool
     {
         if (method_exists($user, 'hasMenuCreateAccess')) {

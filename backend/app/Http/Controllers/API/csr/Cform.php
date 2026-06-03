@@ -8,18 +8,27 @@ use App\Http\Requests\csr\StoreCSRRequest;
 use App\Http\Requests\csr\UpdateCSRRequest;
 use App\Http\Resources\csr\csrResouce;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class Cform extends Controller
+class Cform extends Controller implements HasMiddleware
 {
     public function __construct(
         protected csrService $service
     ) {}
 
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('can:viewAny,App\Models\csr\Mmaster', only: ['index']),
+            new Middleware('can:view,App\Models\csr\Mmaster', only: ['show']),
+            new Middleware('can:create,App\Models\csr\Mmaster', only: ['store', 'addNewCst']),
+            new Middleware('can:update,App\Models\csr\Mmaster', only: ['update', 'confirm', 'cancel']),
+        ];
+    }
+
     public function index(Request $request)
     {
-        // If User model uses HasMenuAccess, we could do:
-        // $this->authorize('viewAny', App\Models\csr\Mmaster::class);
-
         $search = $request->input('search');
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
@@ -44,8 +53,6 @@ class Cform extends Controller
 
     public function store(StoreCSRRequest $request)
     {
-        // $this->authorize('create', App\Models\csr\Mmaster::class);
-        
         $userId = $request->user() ? $request->user()->username : 'system';
         
         try {
@@ -70,8 +77,6 @@ class Cform extends Controller
 
     public function update(UpdateCSRRequest $request, string $csrCode)
     {
-        // $this->authorize('update', App\Models\csr\Mmaster::class);
-        
         $csrCode = str_replace('.', '/', $csrCode);
         $userId = $request->user() ? $request->user()->username : 'system';
 

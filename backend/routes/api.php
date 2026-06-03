@@ -5,6 +5,9 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\Menu;
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/login', function () {
+    return response()->json(['message' => 'Unauthenticated.'], 401);
+})->name('login');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
@@ -46,4 +49,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('lkt', \App\Http\Controllers\API\lkt\Cform::class)->parameters([
         'lkt' => 'lkt_code'
     ]);
+
+    // Log Book Product Module
+    Route::apiResource('log-books', \App\Http\Controllers\API\logbookproduct\LogBookProductController::class);
 });

@@ -97,6 +97,21 @@ export default function Breadcrumb() {
       steps.push({ label: 'Customer Service Ticket (CST)', path: '/cst' });
       steps.push({ label: `Detail ${formattedCode}` });
     }
+    // LogBookProduct List
+    else if (pathname === '/logbookproduct') {
+      steps.push({ label: 'Log Book Product' });
+    }
+    // LogBookProduct Add
+    else if (pathname === '/logbookproduct/create') {
+      steps.push({ label: 'Log Book Product', path: '/logbookproduct' });
+      steps.push({ label: 'Tambah' });
+    }
+    // LogBookProduct Edit Route
+    else if (pathname.startsWith('/logbookproduct/') && pathname.endsWith('/edit')) {
+      const id = pathname.split('/')[2];
+      steps.push({ label: 'Log Book Product', path: '/logbookproduct' });
+      steps.push({ label: `Edit ${id}` });
+    }
     // Dynamic Fallback
     else {
       const segments = pathname.split('/').filter(Boolean)
