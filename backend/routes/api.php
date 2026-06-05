@@ -62,4 +62,12 @@ Route::middleware('auth:sanctum')->group(function () {
     // Cek Serial Number Module
     Route::get('/cekserialnumber', [\App\Http\Controllers\API\cekserialnumber\Cform::class, 'index']);
     Route::get('/cekserialnumber/{barcode}', [\App\Http\Controllers\API\cekserialnumber\Cform::class, 'detail_serial']);
+
+    // Products Module
+    Route::get('/products/cari-brand', [\App\Http\Controllers\API\products\ProductController::class, 'cariBrand']);
+    Route::get('/products/brosur/{filename}', [\App\Http\Controllers\API\products\ProductController::class, 'downloadBrosur']);
+    Route::post('/products/simpan-brand', [\App\Http\Controllers\API\products\ProductController::class, 'simpanBrand']);
+    Route::post('/products/data-sub-kategori', [\App\Http\Controllers\API\products\ProductController::class, 'dataSubKategori']);
+    Route::post('/products/ganti-status', [\App\Http\Controllers\API\products\ProductController::class, 'gantiStatus']);
+    Route::apiResource('products', \App\Http\Controllers\API\products\ProductController::class);
 });

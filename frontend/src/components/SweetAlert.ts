@@ -64,7 +64,7 @@ export const showAlert = {
   /**
    * Show a Confirmation Alert
    */
-  confirm: (title: string, text: string, onConfirm: () => void, cancelText = 'Batal', confirmText = 'Ya') => {
+  confirm: (title: string, text: string, onConfirm: () => void, cancelText = 'Batal', confirmText = 'Ya', onCancel?: () => void) => {
     return Swal.fire({
       icon: 'question',
       title,
@@ -86,6 +86,8 @@ export const showAlert = {
     }).then((result) => {
       if (result.isConfirmed) {
         onConfirm();
+      } else if (result.isDismissed && onCancel) {
+        onCancel();
       }
     });
   }

@@ -131,6 +131,38 @@ export default function Breadcrumb() {
     else if (pathname === '/cekserialnumber') {
       steps.push({ label: 'Cek Serial Number' });
     }
+    // Products List
+    else if (pathname === '/product') {
+      steps.push({ label: 'Product' });
+    }
+    // Products Add
+    else if (pathname === '/product/create') {
+      steps.push({ label: 'Product', path: '/product' });
+      steps.push({ label: 'Tambah' });
+    }
+    // Products Upload
+    else if (pathname === '/product/upload') {
+      steps.push({ label: 'Product', path: '/product' });
+      steps.push({ label: 'Upload' });
+    }
+    // Products Edit Route
+    else if (pathname.startsWith('/product/edit/')) {
+      const id = pathname.split('/')[3];
+      const state = location.state as any;
+      const displayCode = state?.code || id;
+      const mode = new URLSearchParams(location.search).get('mode');
+      const isEditing = mode === 'edit';
+      steps.push({ label: 'Product', path: '/product' });
+      steps.push({ label: `${isEditing ? 'Edit' : 'Detail'} ${displayCode}` });
+    }
+    // Products Duplicate Route
+    else if (pathname.startsWith('/product/duplicate/')) {
+      const id = pathname.split('/')[3];
+      const state = location.state as any;
+      const displayCode = state?.code || id;
+      steps.push({ label: 'Product', path: '/product' });
+      steps.push({ label: `Duplicate ${displayCode}` });
+    }
     // Dynamic Fallback
     else {
       const segments = pathname.split('/').filter(Boolean)

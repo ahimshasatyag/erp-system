@@ -34,6 +34,11 @@ import LogBookCustomerEditPage from '../modules/logbookcustomers/pages/LogBookCu
 // Cek Serial Number Routes
 import CekSerialNumberPage from '../modules/cekserialnumber/pages/CekSerialNumberPage'
 
+// Product Routes
+import ProductListPage from '../modules/products/pages/ProductListPage'
+import ProductEditPage from '../modules/products/pages/ProductEditPage'
+import ProductUploadPage from '../modules/products/pages/ProductUploadPage'
+
 export default function AppRouter() {
     return (
         <BrowserRouter>
@@ -85,6 +90,13 @@ export default function AppRouter() {
 
                                     {/* Cek Serial Number Routes */}
                                     <Route path="/cekserialnumber" element={<CekSerialNumberPage />} />
+
+                                    {/* Product Routes */}
+                                    <Route path="/product" element={<ProductListPage />} />
+                                    <Route path="/product/create" element={<ProductEditPage />} />
+                                    <Route path="/product/edit/:id" element={<ProductEditPage />} />
+                                    <Route path="/product/duplicate/:id" element={<ProductEditPage />} />
+                                    <Route path="/product/upload" element={<ProductUploadPage />} />
                                 </Routes>
                             </MainLayout>
                         </ProtectedRoute>
