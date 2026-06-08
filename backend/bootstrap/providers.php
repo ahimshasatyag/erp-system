@@ -10,4 +10,5 @@ return [
     App\Providers\csr\CsrServiceProvider::class,
     App\Providers\cekserialnumber\CekSerialNumberServiceProvider::class,
     App\Providers\products\ProductServiceProvider::class,
+    App\Providers\productcategory\ProductCategoryServiceProvider::class,
 ];

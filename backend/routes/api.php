@@ -5,6 +5,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\Menu;
 use App\Http\Controllers\API\logbookproduct\LogBookProductController;
 use App\Http\Controllers\API\logbookcustomers\LogBookCustomerController;
+use App\Http\Controllers\API\productcategory\ProductCategoryController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/login', function () {
@@ -70,4 +71,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/products/data-sub-kategori', [\App\Http\Controllers\API\products\ProductController::class, 'dataSubKategori']);
     Route::post('/products/ganti-status', [\App\Http\Controllers\API\products\ProductController::class, 'gantiStatus']);
     Route::apiResource('products', \App\Http\Controllers\API\products\ProductController::class);
+
+    // Product Category Module
+    Route::apiResource('product-category', ProductCategoryController::class);
 });

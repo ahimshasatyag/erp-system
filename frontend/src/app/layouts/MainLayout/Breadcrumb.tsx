@@ -163,6 +163,23 @@ export default function Breadcrumb() {
       steps.push({ label: 'Product', path: '/product' });
       steps.push({ label: `Duplicate ${displayCode}` });
     }
+    // Product Category List
+    else if (pathname === '/productcategory') {
+      steps.push({ label: 'Product Category' });
+    }
+    // Product Category Add
+    else if (pathname === '/productcategory/create') {
+      steps.push({ label: 'Product Category', path: '/productcategory' });
+      steps.push({ label: 'Tambah' });
+    }
+    // Product Category Edit Route
+    else if (pathname.startsWith('/productcategory/') && pathname.endsWith('/edit')) {
+      const id = pathname.split('/')[2];
+      const state = location.state as any;
+      const displayName = state?.name || id;
+      steps.push({ label: 'Product Category', path: '/productcategory' });
+      steps.push({ label: `Edit ${displayName}` });
+    }
     // Dynamic Fallback
     else {
       const segments = pathname.split('/').filter(Boolean)

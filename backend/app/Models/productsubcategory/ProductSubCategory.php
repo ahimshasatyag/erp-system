@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Models\products;
+namespace App\Models\productsubcategory;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\productcategory\ProductCategory;
 
 class ProductSubCategory extends Model
 {

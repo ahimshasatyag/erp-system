@@ -1,16 +1,17 @@
 <?php
 
-namespace App\Models\products;
+namespace App\Models\productcategory;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ProductBrand extends Model
+class ProductCategory extends Model
 {
     use HasFactory;
 
-    protected $table = 'm_product_brand';
-    protected $primaryKey = 'id_product_brand';
+    protected $table = 'm_product_kategori';
+    protected $primaryKey = 'id_product_kategori';
+    
     public $incrementing = false;
     protected $keyType = 'string';
     
@@ -18,8 +19,9 @@ class ProductBrand extends Model
     const UPDATED_AT = 'date_update';
 
     protected $fillable = [
-        'id_product_brand',
-        'nm_product_brand',
+        'id_product_kategori',
+        'kode_product_kategori',
+        'nm_product_kategori',
         'date_create',
         'date_update'
     ];

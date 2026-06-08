@@ -4,6 +4,10 @@ namespace App\Models\products;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\productcategory\ProductCategory;
+use App\Models\productsubcategory\ProductSubCategory;
+use App\Models\productunit\ProductUnit;
+use App\Models\productbrand\ProductBrand;
 
 class Product extends Model
 {
