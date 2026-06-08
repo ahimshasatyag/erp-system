@@ -44,6 +44,11 @@ import ProductCategoryListPage from '../modules/productcategory/pages/ProductCat
 import ProductCategoryAddPage from '../modules/productcategory/pages/ProductCategoryAddPage'
 import ProductCategoryEditPage from '../modules/productcategory/pages/ProductCategoryEditPage'
 
+// Product Sub Category Routes
+import ProductSubCategoryListPage from '../modules/productsubcategory/pages/ProductSubCategoryListPage'
+import ProductSubCategoryCreatePage from '../modules/productsubcategory/pages/ProductSubCategoryCreatePage'
+import ProductSubCategoryEditPage from '../modules/productsubcategory/pages/ProductSubCategoryEditPage'
+
 export default function AppRouter() {
     return (
         <BrowserRouter>
@@ -88,10 +93,15 @@ export default function AppRouter() {
                                     <Route path="/logbookproduct/create" element={<LogBookProductAddPage />} />
                                     <Route path="/logbookproduct/:code/edit" element={<LogBookProductEditPage />} />
 
-                                    {/* ProductCategory Routes */}
+                                    {/* Product Category Routes */}
                                     <Route path="/productcategory" element={<ProductCategoryListPage />} />
                                     <Route path="/productcategory/create" element={<ProductCategoryAddPage />} />
                                     <Route path="/productcategory/:id/edit" element={<ProductCategoryEditPage />} />
+                                    
+                                    {/* Product Sub Category Routes */}
+                                    <Route path="/productsubcategory" element={<ProductSubCategoryListPage />} />
+                                    <Route path="/productsubcategory/create" element={<ProductSubCategoryCreatePage />} />
+                                    <Route path="/productsubcategory/:id/edit" element={<ProductSubCategoryEditPage />} />
 
                                     {/* LogBookCustomer Routes */}
                                     <Route path="/logbookcustomers" element={<LogBookCustomerListPage />} />

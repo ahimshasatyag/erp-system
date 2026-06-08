@@ -56,16 +56,16 @@ export default function Breadcrumb() {
       const subCode = pathname.split('/')[3] || '';
       const parts = subCode.split('.');
       const noUrut = parts.pop() || '';
-      
+
       const searchParams = new URLSearchParams(location.search);
       const paramLkt = searchParams.get('lkt');
-      
+
       let lktCode = paramLkt || parts.join('.');
       if (lktCode.startsWith('RS-')) {
         lktCode = 'LKT-' + lktCode.substring(3);
       }
       const formattedLktCode = lktCode ? lktCode.replace(/\./g, '/') : '';
-      
+
       const mode = searchParams.get('mode') || 'detail';
       const isEditing = mode === 'edit';
 
@@ -179,6 +179,25 @@ export default function Breadcrumb() {
       const displayName = state?.name || id;
       steps.push({ label: 'Product Category', path: '/productcategory' });
       steps.push({ label: `Edit ${displayName}` });
+    }
+    // Product Sub Category List
+    else if (pathname === '/productsubcategory') {
+      steps.push({ label: 'Sub Category' });
+    }
+    // Product Sub Category Add
+    else if (pathname === '/productsubcategory/create') {
+      steps.push({ label: 'Sub Category', path: '/productsubcategory' });
+      steps.push({ label: 'Tambah' });
+    }
+    // Product Sub Category Edit Route
+    else if (pathname.startsWith('/productsubcategory/') && pathname.endsWith('/edit')) {
+      const id = pathname.split('/')[2];
+      const state = location.state as any;
+      const displayName = state?.name || id;
+      const queryParams = new URLSearchParams(location.search);
+      const isViewMode = queryParams.get('mode') !== 'edit';
+      steps.push({ label: 'Sub Category', path: '/productsubcategory' });
+      steps.push({ label: isViewMode ? `Detail ${displayName}` : `Edit ${displayName}` });
     }
     // Dynamic Fallback
     else {
