@@ -49,25 +49,27 @@ const ProductEditPage: React.FC = () => {
                         else searchParams.delete('mode');
                         navigate({ search: searchParams.toString() }, { replace: true, state: location.state });
                     }}
-                    className={`px-3 py-1.5 border rounded transition text-[13px] font-medium ${isEditMode ? 'bg-blue-100 text-blue-700 border-blue-300' : 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200'}`}
+                    className={`flex items-center gap-2 px-4 py-2 text-white text-[13px] font-medium rounded transition-colors ${isEditMode ? 'bg-[#f59e0b] hover:bg-[#d97706]' : 'bg-[#0ea5e9] hover:bg-[#0284c7]'}`}
                 >
-                    {isEditMode ? 'Cancel' : 'Edit'}
+                    <i className={isEditMode ? "fas fa-undo" : "fas fa-edit"}></i>
+                    {isEditMode ? 'Batal Edit' : 'Edit'}
                 </button>
             )}
             {(isCreate || isDuplicate) && (
                 <button
                     type="button"
                     onClick={() => navigate('/product')}
-                    className="px-3 py-1.5 bg-gray-100 text-gray-700 border border-gray-300 rounded hover:bg-gray-200 transition text-[13px] font-medium"
+                    className="flex items-center gap-2 px-4 py-2 bg-[#f59e0b] text-white text-[13px] font-medium rounded hover:bg-[#d97706] transition-colors"
                 >
-                    Cancel
+                    <i className="fas fa-undo"></i>
+                    Kembali
                 </button>
             )}
             {!isEditMode && (
                 <>
-                    <button type="button" onClick={() => navigate('/product/create')} className="px-3 py-1.5 bg-gray-100 text-gray-700 border border-gray-300 rounded hover:bg-gray-200 transition text-[13px] font-medium">Create</button>
+                    <button type="button" onClick={() => navigate('/product/create')} className="flex items-center gap-2 px-4 py-2 bg-[#eab308] text-white text-[13px] font-medium rounded hover:bg-[#ca8a04] transition-colors"><i className="fas fa-plus"></i> Tambah</button>
                     {id && !isCreate && (
-                        <button type="button" onClick={() => navigate(`/product/duplicate/${id}`, { state: { code: product?.code_product } })} className="px-3 py-1.5 bg-gray-100 text-gray-700 border border-gray-300 rounded hover:bg-gray-200 transition text-[13px] font-medium">Duplicate</button>
+                        <button type="button" onClick={() => navigate(`/product/duplicate/${id}`, { state: { code: product?.code_product } })} className="flex items-center gap-2 px-4 py-2 bg-purple-500 text-white text-[13px] font-medium rounded hover:bg-purple-600 transition-colors">Duplikat</button>
                     )}
                 </>
             )}

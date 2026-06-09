@@ -69,7 +69,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId = null, isDuplicate
                     </h4>
                     <div className="flex gap-2">
                         {headerButtons}
-                        <button className="px-3 py-1.5 bg-green-600 text-white rounded hover:bg-green-700 transition font-medium text-[13px]" type="submit" disabled={loading}>
+                        <button className="flex items-center gap-2 px-4 py-2 bg-[#22c55e] text-white text-[13px] font-medium rounded hover:bg-[#16a34a] transition-colors disabled:opacity-50" type="submit" disabled={loading}>
+                            <i className="fas fa-save"></i>
                             {loading ? 'Saving...' : 'Save'}
                         </button>
                     </div>

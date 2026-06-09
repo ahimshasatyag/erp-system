@@ -77,4 +77,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('product-sub-category', \App\Http\Controllers\API\productsubcategory\ProductSubCategoryController::class);
     Route::apiResource('product-unit', \App\Http\Controllers\API\productunit\ProductUnitController::class);
     Route::apiResource('product-brand', \App\Http\Controllers\API\productbrand\ProductBrandController::class);
+
+    // Customer Module
+    Route::get('/customers/provinsi', [\App\Http\Controllers\API\customers\CustomerController::class, 'getProvinsi']);
+    Route::post('/customers/kabupaten', [\App\Http\Controllers\API\customers\CustomerController::class, 'getKabupaten']);
+    Route::apiResource('customers', \App\Http\Controllers\API\customers\CustomerController::class);
 });
