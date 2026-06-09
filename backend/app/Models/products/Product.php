@@ -46,8 +46,7 @@ class Product extends Model
 
     public function subCategory()
     {
-        return $this->belongsTo(ProductSubCategory::class, 'id_product_sub_kategori', 'id_product_sub_kategori')
-            ->where('id_product_kategori', $this->id_product_kategori);
+        return $this->belongsTo(ProductSubCategory::class, 'id_product_sub_kategori', 'id_product_sub_kategori');
     }
 
     public function unit()
