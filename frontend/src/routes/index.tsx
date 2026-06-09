@@ -54,6 +54,11 @@ import ProductUnitListPage from '../modules/productunit/pages/ProductUnitListPag
 import ProductUnitAddPage from '../modules/productunit/pages/ProductUnitAddPage'
 import ProductUnitEditPage from '../modules/productunit/pages/ProductUnitEditPage'
 
+// Product Brand Routes
+import ProductBrandListPage from '../modules/productbrand/pages/ProductBrandListPage'
+import ProductBrandAddPage from '../modules/productbrand/pages/ProductBrandAddPage'
+import ProductBrandEditPage from '../modules/productbrand/pages/ProductBrandEditPage'
+
 export default function AppRouter() {
     return (
         <BrowserRouter>
@@ -112,6 +117,11 @@ export default function AppRouter() {
                                     <Route path="/productunit" element={<ProductUnitListPage />} />
                                     <Route path="/productunit/create" element={<ProductUnitAddPage />} />
                                     <Route path="/productunit/:id/edit" element={<ProductUnitEditPage />} />
+
+                                    {/* Product Brand Routes */}
+                                    <Route path="/productbrand" element={<ProductBrandListPage />} />
+                                    <Route path="/productbrand/create" element={<ProductBrandAddPage />} />
+                                    <Route path="/productbrand/:id/edit" element={<ProductBrandEditPage />} />
 
                                     {/* LogBookCustomer Routes */}
                                     <Route path="/logbookcustomers" element={<LogBookCustomerListPage />} />

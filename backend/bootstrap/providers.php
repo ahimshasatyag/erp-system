@@ -13,4 +13,5 @@ return [
     App\Providers\productcategory\ProductCategoryServiceProvider::class,
     App\Providers\productsubcategory\ProductSubCategoryServiceProvider::class,
     App\Providers\productunit\ProductUnitServiceProvider::class,
+    App\Providers\productbrand\ProductBrandServiceProvider::class,
 ];

@@ -76,4 +76,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('product-category', ProductCategoryController::class);
     Route::apiResource('product-sub-category', \App\Http\Controllers\API\productsubcategory\ProductSubCategoryController::class);
     Route::apiResource('product-unit', \App\Http\Controllers\API\productunit\ProductUnitController::class);
+    Route::apiResource('product-brand', \App\Http\Controllers\API\productbrand\ProductBrandController::class);
 });

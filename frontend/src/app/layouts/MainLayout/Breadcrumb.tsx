@@ -218,6 +218,25 @@ export default function Breadcrumb() {
       steps.push({ label: 'Unit', path: '/productunit' });
       steps.push({ label: isViewMode ? `Detail ${displayName}` : `Edit ${displayName}` });
     }
+    // Product Brand List
+    else if (pathname === '/productbrand') {
+      steps.push({ label: 'Brand' });
+    }
+    // Product Brand Add
+    else if (pathname === '/productbrand/create') {
+      steps.push({ label: 'Brand', path: '/productbrand' });
+      steps.push({ label: 'Tambah' });
+    }
+    // Product Brand Edit Route
+    else if (pathname.startsWith('/productbrand/') && pathname.endsWith('/edit')) {
+      const id = pathname.split('/')[2];
+      const state = location.state as any;
+      const displayName = state?.name || id;
+      const queryParams = new URLSearchParams(location.search);
+      const isViewMode = queryParams.get('mode') !== 'edit';
+      steps.push({ label: 'Brand', path: '/productbrand' });
+      steps.push({ label: isViewMode ? `Detail ${displayName}` : `Edit ${displayName}` });
+    }
     // Dynamic Fallback
     else {
       const segments = pathname.split('/').filter(Boolean)
