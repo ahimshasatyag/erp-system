@@ -49,6 +49,11 @@ import ProductSubCategoryListPage from '../modules/productsubcategory/pages/Prod
 import ProductSubCategoryCreatePage from '../modules/productsubcategory/pages/ProductSubCategoryCreatePage'
 import ProductSubCategoryEditPage from '../modules/productsubcategory/pages/ProductSubCategoryEditPage'
 
+// Product Unit Routes
+import ProductUnitListPage from '../modules/productunit/pages/ProductUnitListPage'
+import ProductUnitAddPage from '../modules/productunit/pages/ProductUnitAddPage'
+import ProductUnitEditPage from '../modules/productunit/pages/ProductUnitEditPage'
+
 export default function AppRouter() {
     return (
         <BrowserRouter>
@@ -102,6 +107,11 @@ export default function AppRouter() {
                                     <Route path="/productsubcategory" element={<ProductSubCategoryListPage />} />
                                     <Route path="/productsubcategory/create" element={<ProductSubCategoryCreatePage />} />
                                     <Route path="/productsubcategory/:id/edit" element={<ProductSubCategoryEditPage />} />
+
+                                    {/* Product Unit Routes */}
+                                    <Route path="/productunit" element={<ProductUnitListPage />} />
+                                    <Route path="/productunit/create" element={<ProductUnitAddPage />} />
+                                    <Route path="/productunit/:id/edit" element={<ProductUnitEditPage />} />
 
                                     {/* LogBookCustomer Routes */}
                                     <Route path="/logbookcustomers" element={<LogBookCustomerListPage />} />

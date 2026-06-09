@@ -13,10 +13,14 @@ class ProductUnit extends Model
     protected $primaryKey = 'id_product_satuan';
     public $incrementing = false;
     protected $keyType = 'string';
-    public $timestamps = false;
+    
+    const CREATED_AT = 'date_create';
+    const UPDATED_AT = 'date_update';
 
     protected $fillable = [
         'id_product_satuan',
         'nm_product_satuan',
+        'date_create',
+        'date_update'
     ];
 }
