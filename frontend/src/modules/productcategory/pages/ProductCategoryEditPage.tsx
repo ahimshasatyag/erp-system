@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import ProductCategoryForm from '../forms/ProductCategoryForm';
 import { fetchProductCategory, updateProductCategory } from '../api/productCategoryApi';
 import type { ProductCategory } from '../api/productCategoryApi';
@@ -9,9 +9,13 @@ import { showAlert } from '../../../components/SweetAlert';
 const ProductCategoryEditPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
+    const location = useLocation();
+    const [searchParams, setSearchParams] = useSearchParams();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [initialData, setInitialData] = useState<ProductCategory | undefined>(undefined);
     const [isLoading, setIsLoading] = useState(true);
+
+    const isViewMode = searchParams.get('mode') !== 'edit';
 
     useEffect(() => {
         const loadData = async () => {
@@ -52,6 +56,18 @@ const ProductCategoryEditPage: React.FC = () => {
         }
     };
 
+    const handleEditToggle = () => {
+        setSearchParams({ mode: 'edit' }, { state: location.state });
+    };
+
+    const handleCancel = () => {
+        if (isViewMode) {
+            navigate('/productcategory');
+        } else {
+            setSearchParams({ mode: 'view' }, { state: location.state });
+        }
+    };
+
     if (isLoading) {
         return (
             <div className="w-full min-h-screen flex items-center justify-center">
@@ -63,8 +79,10 @@ const ProductCategoryEditPage: React.FC = () => {
     return (
         <div className="w-full min-h-screen py-2 px-6">
             <div className="flex justify-between items-center mb-6 pt-2">
-                <p className="text-[32px] font-normal text-[#3f2a2a] tracking-tight">Edit Product Category</p>
-                <div className="text-[13px] text-gray-500 font-medium">EMM Service / Product Category / Edit</div>
+                <p className="text-[32px] font-normal text-[#3f2a2a] tracking-tight">
+                    {isViewMode ? 'Detail Product Category' : 'Edit Product Category'}
+                </p>
+                <div className="text-[13px] text-gray-500 font-medium">EMM Service / Product Category {isViewMode ? '/ Detail' : '/ Edit'}</div>
             </div>
 
             <div className="bg-white rounded shadow-sm border border-gray-200">
@@ -72,8 +90,11 @@ const ProductCategoryEditPage: React.FC = () => {
                     <ProductCategoryForm 
                         initialData={initialData} 
                         onSubmit={handleSubmit} 
+                        onCancel={handleCancel}
+                        onEdit={handleEditToggle}
                         isSubmitting={isSubmitting} 
-                        isEdit={true}
+                        isEditMode={true}
+                        isViewMode={isViewMode}
                     />
                 </div>
             </div>

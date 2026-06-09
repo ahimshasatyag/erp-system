@@ -165,11 +165,11 @@ export default function Breadcrumb() {
     }
     // Product Category List
     else if (pathname === '/productcategory') {
-      steps.push({ label: 'Product Category' });
+      steps.push({ label: 'Category' });
     }
     // Product Category Add
     else if (pathname === '/productcategory/create') {
-      steps.push({ label: 'Product Category', path: '/productcategory' });
+      steps.push({ label: 'Category', path: '/productcategory' });
       steps.push({ label: 'Tambah' });
     }
     // Product Category Edit Route
@@ -177,7 +177,7 @@ export default function Breadcrumb() {
       const id = pathname.split('/')[2];
       const state = location.state as any;
       const displayName = state?.name || id;
-      steps.push({ label: 'Product Category', path: '/productcategory' });
+      steps.push({ label: 'Category', path: '/productcategory' });
       steps.push({ label: `Edit ${displayName}` });
     }
     // Product Sub Category List

@@ -9,11 +9,24 @@ import type { ProductCategory } from '../api/productCategoryApi';
 interface ProductCategoryFormProps {
     initialData?: ProductCategory;
     onSubmit: (data: ProductCategoryFormData) => Promise<void>;
+    onCancel?: () => void;
+    onEdit?: () => void;
     isSubmitting: boolean;
     isEdit?: boolean;
+    isEditMode?: boolean;
+    isViewMode?: boolean;
 }
 
-const ProductCategoryForm: React.FC<ProductCategoryFormProps> = ({ initialData, onSubmit, isSubmitting, isEdit = false }) => {
+const ProductCategoryForm: React.FC<ProductCategoryFormProps> = ({ 
+    initialData, 
+    onSubmit, 
+    onCancel,
+    onEdit,
+    isSubmitting, 
+    isEdit = false,
+    isEditMode = false,
+    isViewMode = false
+}) => {
     const navigate = useNavigate();
     
     const { register, handleSubmit, formState: { errors }, reset } = useForm<ProductCategoryFormData>({
@@ -37,42 +50,67 @@ const ProductCategoryForm: React.FC<ProductCategoryFormProps> = ({ initialData, 
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div className="flex items-center gap-3 pb-4 border-b border-gray-100 mb-4">
+                {isViewMode ? (
+                    <>
+                        <button
+                            type="button"
+                            onClick={onEdit}
+                            className="flex items-center gap-2 px-4 py-2 bg-[#0ea5e9] text-white text-[13px] font-medium rounded hover:bg-[#0284c7] transition-colors"
+                        >
+                            <i className="fas fa-edit"></i>
+                            Edit
+                        </button>
+                        <button
+                            type="button"
+                            onClick={onCancel || (() => navigate('/productcategory'))}
+                            className="flex items-center gap-2 px-4 py-2 bg-[#f59e0b] text-white text-[13px] font-medium rounded hover:bg-[#d97706] transition-colors"
+                        >
+                            <i className="fas fa-undo"></i>
+                            Kembali
+                        </button>
+                    </>
+                ) : (
+                    <>
+                        <button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className="flex items-center gap-2 px-4 py-2 bg-[#22c55e] text-white text-[13px] font-medium rounded hover:bg-[#16a34a] transition-colors disabled:opacity-50"
+                        >
+                            <i className="fas fa-save"></i>
+                            {isSubmitting ? 'Menyimpan...' : (isEdit || isEditMode ? 'Update' : 'Simpan')}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={onCancel || (() => navigate('/productcategory'))}
+                            disabled={isSubmitting}
+                            className="flex items-center gap-2 px-4 py-2 bg-[#f59e0b] text-white text-[13px] font-medium rounded hover:bg-[#d97706] transition-colors disabled:opacity-50"
+                        >
+                            <i className="fas fa-undo"></i>
+                            Kembali
+                        </button>
+                    </>
+                )}
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-[13px] font-medium text-gray-700 mb-1">
                         Category Name <span className="text-red-500">*</span>
                     </label>
                     <input
                         type="text"
                         {...register('nm_product_kategori')}
-                        className={`w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 ${
-                            errors.nm_product_kategori ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
+                        className={`w-full px-3 py-2 text-[13px] border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed ${
+                            errors.nm_product_kategori ? 'border-red-500' : 'border-gray-300'
                         }`}
                         placeholder="Masukkan nama kategori"
-                        disabled={isSubmitting}
+                        disabled={isSubmitting || isViewMode}
                     />
                     {errors.nm_product_kategori && (
                         <p className="mt-1 text-xs text-red-500">{errors.nm_product_kategori.message}</p>
                     )}
                 </div>
-            </div>
-
-            <div className="flex gap-2">
-                <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="bg-[#20c997] hover:bg-[#1ba87e] text-white px-4 py-2 rounded text-sm font-medium transition-colors disabled:opacity-50"
-                >
-                    {isSubmitting ? 'Menyimpan...' : (isEdit ? 'Update' : 'Simpan')}
-                </button>
-                <button
-                    type="button"
-                    onClick={() => navigate('/productcategory')}
-                    disabled={isSubmitting}
-                    className="bg-[#17a2b8] hover:bg-[#138496] text-white px-4 py-2 rounded text-sm font-medium transition-colors disabled:opacity-50"
-                >
-                    Kembali
-                </button>
             </div>
         </form>
     );

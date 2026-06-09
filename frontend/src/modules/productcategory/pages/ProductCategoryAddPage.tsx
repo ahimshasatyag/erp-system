@@ -29,8 +29,8 @@ const ProductCategoryAddPage: React.FC = () => {
     return (
         <div className="w-full min-h-screen py-2 px-6">
             <div className="flex justify-between items-center mb-6 pt-2">
-                <p className="text-[32px] font-normal text-[#3f2a2a] tracking-tight">Tambah Product Category</p>
-                <div className="text-[13px] text-gray-500 font-medium">EMM Service / Product Category / Tambah</div>
+                <p className="text-[32px] font-normal text-[#3f2a2a] tracking-tight">Tambah Category</p>
+                <div className="text-[13px] text-gray-500 font-medium">EMM Service / Category / Tambah</div>
             </div>
 
             <div className="bg-white rounded shadow-sm border border-gray-200">
