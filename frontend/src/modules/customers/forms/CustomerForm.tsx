@@ -6,6 +6,7 @@ import { customerSchema } from '../validation/customerSchema';
 import type { CustomerFormData } from '../validation/customerSchema';
 import type { Customer, Provinsi, Kabupaten } from '../api/customerApi';
 import { fetchProvinsi, fetchKabupaten } from '../api/customerApi';
+import SearchablePaginatedSelect from '../../../components/SearchablePaginatedSelect';
 
 interface CustomerFormProps {
     initialData?: Customer;
@@ -313,16 +314,25 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
                             <span>Provinsi</span><span>:</span>
                         </div>
                         <div className="w-[70%] p-1.5">
-                            <select 
-                                {...register('provinsi')} 
-                                className={`w-full px-2 py-1 text-[13px] border rounded outline-none ${errors.provinsi ? 'border-red-500' : 'border-gray-300'}`}
-                                disabled={isSubmitting || isViewMode || loadingProvinsi}
-                            >
-                                <option value="">Cari Provinsi...</option>
-                                {provinsiList.map(p => (
-                                    <option key={p.id} value={p.id}>{p.nama}</option>
-                                ))}
-                            </select>
+                            <Controller
+                                control={control}
+                                name="provinsi"
+                                render={({ field }) => (
+                                    <SearchablePaginatedSelect
+                                        value={field.value || ''}
+                                        onChange={(val) => {
+                                            field.onChange(val);
+                                        }}
+                                        options={provinsiList.map(p => ({
+                                            value: String(p.id),
+                                            label: p.nama
+                                        }))}
+                                        placeholder="----- Cari Provinsi -----"
+                                        disabled={isSubmitting || isViewMode || loadingProvinsi}
+                                        error={errors.provinsi?.message}
+                                    />
+                                )}
+                            />
                         </div>
                     </div>
 
@@ -331,16 +341,25 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
                             <span>Kabupaten/Kota</span><span>:</span>
                         </div>
                         <div className="w-[70%] p-1.5">
-                            <select 
-                                {...register('kabupaten')} 
-                                className={`w-full px-2 py-1 text-[13px] border rounded outline-none ${errors.kabupaten ? 'border-red-500' : 'border-gray-300'}`}
-                                disabled={isSubmitting || isViewMode || loadingKabupaten || !watchProvinsi}
-                            >
-                                <option value="">Cari Kabupaten/Kota...</option>
-                                {kabupatenList.map(k => (
-                                    <option key={k.id} value={k.id}>{k.nama_kabupaten}</option>
-                                ))}
-                            </select>
+                            <Controller
+                                control={control}
+                                name="kabupaten"
+                                render={({ field }) => (
+                                    <SearchablePaginatedSelect
+                                        value={field.value || ''}
+                                        onChange={(val) => {
+                                            field.onChange(val);
+                                        }}
+                                        options={kabupatenList.map(k => ({
+                                            value: String(k.id),
+                                            label: k.nama_kabupaten
+                                        }))}
+                                        placeholder="----- Cari Kabupaten/Kota -----"
+                                        disabled={isSubmitting || isViewMode || loadingKabupaten || !watchProvinsi}
+                                        error={errors.kabupaten?.message}
+                                    />
+                                )}
+                            />
                         </div>
                     </div>
                 </div>

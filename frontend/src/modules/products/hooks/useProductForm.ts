@@ -142,6 +142,7 @@ export const useProductForm = (productId: string | null = null, isDuplicate: boo
         optionFields,
         appendOption,
         removeOption,
-        setValue
+        setValue,
+        control
     };
 };

@@ -1,8 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { ChangeEvent } from 'react';
 import { useProductForm } from '../hooks/useProductForm';
 import type { ProductFormValues } from '../hooks/useProductForm';
 import CreateBrandModal from '../components/CreateBrandModal';
+import { Controller } from 'react-hook-form';
+import SearchablePaginatedSelect from '../../../components/SearchablePaginatedSelect';
+import { fetchProductCategories } from '../../productcategory/api/productCategoryApi';
+import { fetchProductBrands } from '../../productbrand/api/productBrandApi';
+import { fetchProductUnits } from '../../productunit/api/productUnitApi';
 
 interface ProductFormProps {
     productId?: string | null;
@@ -26,7 +31,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId = null, isDuplicate
         optionFields,
         appendOption,
         removeOption,
-        setValue
+        setValue,
+        control
     } = useProductForm(productId, isDuplicate);
 
     const [isBrandModalOpen, setIsBrandModalOpen] = useState<boolean>(false);
@@ -34,6 +40,24 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId = null, isDuplicate
     const [brands, setBrands] = useState<{id: string, name: string}[]>([]); 
     const [categories, setCategories] = useState<{id: string, name: string}[]>([]);
     const [units, setUnits] = useState<{id: string, name: string}[]>([]);
+
+    useEffect(() => {
+        const loadDropdowns = async () => {
+            try {
+                const [cats, brnds, unts] = await Promise.all([
+                    fetchProductCategories({ per_page: 1000 }),
+                    fetchProductBrands({ per_page: 1000 }),
+                    fetchProductUnits({ per_page: 1000 })
+                ]);
+                setCategories(cats.data.map(c => ({ id: String(c.id_product_kategori), name: c.nm_product_kategori })));
+                setBrands(brnds.data.map(b => ({ id: String(b.id_product_brand), name: b.nm_product_brand })));
+                setUnits(unts.data.map(u => ({ id: String(u.id_product_satuan), name: u.nm_product_satuan })));
+            } catch (err) {
+                console.error("Failed to load dropdown options", err);
+            }
+        };
+        loadDropdowns();
+    }, []);
 
     const onSubmit = async (data: ProductFormValues) => {
         const result = await submitForm(data);
@@ -62,7 +86,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId = null, isDuplicate
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <div className="bg-white dark:bg-[#1f2028] shadow rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 p-6">
+            <div className="bg-white dark:bg-[#1f2028] shadow rounded-lg border border-gray-200 dark:border-gray-700 p-6">
                 <div className="flex justify-between items-center mb-6">
                     <h4 className="text-xl font-bold text-gray-800 dark:text-gray-100">
                         {isEdit ? 'Edit Product' : 'Tambah Product'}
@@ -119,23 +143,47 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId = null, isDuplicate
                         </div>
                         <div>
                             <label className="block text-[13px] font-medium text-gray-700 dark:text-gray-300 mb-1">Category</label>
-                            <select 
-                                className={`w-full px-3 py-1.5 text-[13px] border rounded focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-800 dark:text-white ${errors.id_product_kategori ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'}`}
-                                {...register('id_product_kategori')}
-                            >
-                                <option value="">Select Category</option>
-                                {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-                            </select>
+                            <Controller
+                                control={control}
+                                name="id_product_kategori"
+                                render={({ field }) => (
+                                    <SearchablePaginatedSelect
+                                        value={field.value || ''}
+                                        onChange={(val) => {
+                                            field.onChange(val);
+                                        }}
+                                        options={categories.map(c => ({
+                                            value: String(c.id),
+                                            label: c.name
+                                        }))}
+                                        placeholder="Select Category"
+                                        disabled={loading || isEdit}
+                                        error={errors.id_product_kategori?.message}
+                                    />
+                                )}
+                            />
                         </div>
                         <div>
                             <label className="block text-[13px] font-medium text-gray-700 dark:text-gray-300 mb-1">Sub Category</label>
-                            <select 
-                                className={`w-full px-3 py-1.5 text-[13px] border rounded focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-800 dark:text-white ${errors.id_product_sub_kategori ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'}`}
-                                {...register('id_product_sub_kategori')}
-                            >
-                                <option value="">Select Sub Category</option>
-                                {subCategories.map((sc: any) => <option key={sc.id_product_sub_kategori} value={sc.id_product_sub_kategori}>{sc.nm_product_sub_kategori}</option>)}
-                            </select>
+                            <Controller
+                                control={control}
+                                name="id_product_sub_kategori"
+                                render={({ field }) => (
+                                    <SearchablePaginatedSelect
+                                        value={field.value || ''}
+                                        onChange={(val) => {
+                                            field.onChange(val);
+                                        }}
+                                        options={subCategories.map((sc: any) => ({
+                                            value: String(sc.id_product_sub_kategori),
+                                            label: sc.nm_product_sub_kategori
+                                        }))}
+                                        placeholder="Select Sub Category"
+                                        disabled={loading}
+                                        error={errors.id_product_sub_kategori?.message}
+                                    />
+                                )}
+                            />
                         </div>
                         <div>
                             <label className="block text-[13px] font-medium text-gray-700 dark:text-gray-300 mb-1">Product Reference</label>
@@ -151,25 +199,55 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId = null, isDuplicate
                     <div className="col-span-1 lg:col-span-4 space-y-4">
                         <div>
                             <label className="block text-[13px] font-medium text-gray-700 dark:text-gray-300 mb-1">Brand</label>
-                            <select 
-                                className={`w-full px-3 py-1.5 text-[13px] border rounded focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-800 dark:text-white ${errors.id_product_brand ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'}`}
-                                {...register('id_product_brand')}
-                                onChange={handleBrandChange}
-                            >
-                                <option value="">Select Brand</option>
-                                {brands.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
-                                <option value="create_new">-- Create New --</option>
-                            </select>
+                            <Controller
+                                control={control}
+                                name="id_product_brand"
+                                render={({ field }) => (
+                                    <SearchablePaginatedSelect
+                                        value={field.value || ''}
+                                        onChange={(val) => {
+                                            if (val === 'create_new') {
+                                                setNewBrandName('');
+                                                setIsBrandModalOpen(true);
+                                            } else {
+                                                field.onChange(val);
+                                            }
+                                        }}
+                                        options={[
+                                            ...brands.map(b => ({
+                                                value: String(b.id),
+                                                label: b.name
+                                            })),
+                                            { value: 'create_new', label: '-- Create New --' }
+                                        ]}
+                                        placeholder="Select Brand"
+                                        disabled={loading}
+                                        error={errors.id_product_brand?.message}
+                                    />
+                                )}
+                            />
                         </div>
                         <div>
                             <label className="block text-[13px] font-medium text-gray-700 dark:text-gray-300 mb-1">Satuan</label>
-                            <select 
-                                className={`w-full px-3 py-1.5 text-[13px] border rounded focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-800 dark:text-white ${errors.id_product_satuan ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'}`}
-                                {...register('id_product_satuan')}
-                            >
-                                <option value="">Select Satuan</option>
-                                {units.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
-                            </select>
+                            <Controller
+                                control={control}
+                                name="id_product_satuan"
+                                render={({ field }) => (
+                                    <SearchablePaginatedSelect
+                                        value={field.value || ''}
+                                        onChange={(val) => {
+                                            field.onChange(val);
+                                        }}
+                                        options={units.map(u => ({
+                                            value: String(u.id),
+                                            label: u.name
+                                        }))}
+                                        placeholder="Select Satuan"
+                                        disabled={loading}
+                                        error={errors.id_product_satuan?.message}
+                                    />
+                                )}
+                            />
                         </div>
                         <div>
                             <label className="block text-[13px] font-medium text-gray-700 dark:text-gray-300 mb-1">Deskripsi</label>
@@ -202,7 +280,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId = null, isDuplicate
             </div>
 
             {/* Dynamic Options */}
-            <div className="bg-white dark:bg-[#1f2028] shadow rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 p-6">
+            <div className="bg-white dark:bg-[#1f2028] shadow rounded-lg border border-gray-200 dark:border-gray-700 p-6">
                 <div className="mb-4">
                     <button 
                         type="button" 

@@ -3,10 +3,10 @@
 namespace App\Repositories\products;
 
 use App\Models\products\Product;
-use App\Models\products\ProductCategory;
-use App\Models\products\ProductSubCategory;
-use App\Models\products\ProductBrand;
-use App\Models\products\ProductUnit;
+use App\Models\productcategory\ProductCategory;
+use App\Models\productsubcategory\ProductSubCategory;
+use App\Models\productbrand\ProductBrand;
+use App\Models\productunit\ProductUnit;
 
 class ProductRepository implements ProductRepositoryInterface
 {
