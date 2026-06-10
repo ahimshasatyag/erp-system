@@ -82,4 +82,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/customers/provinsi', [\App\Http\Controllers\API\customers\CustomerController::class, 'getProvinsi']);
     Route::post('/customers/kabupaten', [\App\Http\Controllers\API\customers\CustomerController::class, 'getKabupaten']);
     Route::apiResource('customers', \App\Http\Controllers\API\customers\CustomerController::class);
+
+    // Customer Contact Module
+    Route::get('/customer-contacts/data-customers', [\App\Http\Controllers\API\customercontact\CustomerContactController::class, 'dataCustomer']);
+    Route::apiResource('customer-contacts', \App\Http\Controllers\API\customercontact\CustomerContactController::class);
 });
