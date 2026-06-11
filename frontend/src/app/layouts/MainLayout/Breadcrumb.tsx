@@ -275,6 +275,25 @@ export default function Breadcrumb() {
       steps.push({ label: 'Contact', path: '/customerscontact' });
       steps.push({ label: isViewMode ? `Detail ${displayName}` : `Edit ${displayName}` });
     }
+    // Supplier List
+    else if (pathname === '/suppliers') {
+      steps.push({ label: 'Supplier' });
+    }
+    // Supplier Add
+    else if (pathname === '/suppliers/create') {
+      steps.push({ label: 'Supplier', path: '/suppliers' });
+      steps.push({ label: 'Tambah' });
+    }
+    // Supplier Edit Route
+    else if (pathname.startsWith('/suppliers/') && pathname.endsWith('/edit')) {
+      const id = pathname.split('/')[2];
+      const state = location.state as any;
+      const displayName = state?.name || id;
+      const queryParams = new URLSearchParams(location.search);
+      const isViewMode = queryParams.get('mode') !== 'edit';
+      steps.push({ label: 'Supplier', path: '/suppliers' });
+      steps.push({ label: isViewMode ? `Detail ${displayName}` : `Edit ${displayName}` });
+    }
     // Dynamic Fallback
     else {
       const segments = pathname.split('/').filter(Boolean)

@@ -86,4 +86,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Customer Contact Module
     Route::get('/customer-contacts/data-customers', [\App\Http\Controllers\API\customercontact\CustomerContactController::class, 'dataCustomer']);
     Route::apiResource('customer-contacts', \App\Http\Controllers\API\customercontact\CustomerContactController::class);
+
+    // Supplier Module
+    Route::apiResource('suppliers', \App\Http\Controllers\API\suppliers\SupplierController::class);
 });

@@ -69,6 +69,11 @@ import CustomerContactListPage from '../modules/customercontact/pages/CustomerCo
 import CustomerContactCreatePage from '../modules/customercontact/pages/CustomerContactCreatePage'
 import CustomerContactEditPage from '../modules/customercontact/pages/CustomerContactEditPage'
 
+// Supplier Routes
+import SupplierListPage from '../modules/suppliers/pages/SupplierListPage'
+import SupplierAddPage from '../modules/suppliers/pages/SupplierAddPage'
+import SupplierEditPage from '../modules/suppliers/pages/SupplierEditPage'
+
 export default function AppRouter() {
     return (
         <BrowserRouter>
@@ -142,6 +147,11 @@ export default function AppRouter() {
                                     <Route path="/customerscontact" element={<CustomerContactListPage />} />
                                     <Route path="/customerscontact/create" element={<CustomerContactCreatePage />} />
                                     <Route path="/customerscontact/edit/:id" element={<CustomerContactEditPage />} />
+
+                                    {/* Supplier Routes */}
+                                    <Route path="/suppliers" element={<SupplierListPage />} />
+                                    <Route path="/suppliers/create" element={<SupplierAddPage />} />
+                                    <Route path="/suppliers/:id/edit" element={<SupplierEditPage />} />
 
                                     {/* LogBookCustomer Routes */}
                                     <Route path="/logbookcustomers" element={<LogBookCustomerListPage />} />

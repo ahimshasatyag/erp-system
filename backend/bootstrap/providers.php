@@ -16,4 +16,5 @@ return [
     App\Providers\productbrand\ProductBrandServiceProvider::class,
     App\Providers\customers\CustomerServiceProvider::class,
     App\Providers\customercontact\CustomerContactServiceProvider::class,
+    App\Providers\suppliers\SupplierServiceProvider::class,
 ];
