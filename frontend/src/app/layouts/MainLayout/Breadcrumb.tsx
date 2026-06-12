@@ -318,6 +318,25 @@ export default function Breadcrumb() {
       steps.push({ label: 'Purchase Requisition', path: '/purchaserequisitions' });
       steps.push({ label: 'List PR' });
     }
+    // Quotations AP List
+    else if (pathname === '/quotationsap') {
+      steps.push({ label: 'Quotation' });
+    }
+    // Quotations AP Add
+    else if (pathname === '/quotationsap/create') {
+      steps.push({ label: 'Quotation', path: '/quotationsap' });
+      steps.push({ label: 'Tambah' });
+    }
+    // Quotations AP Edit Route
+    else if (pathname.startsWith('/quotationsap/') && pathname.endsWith('/edit')) {
+      const id = pathname.split('/')[2];
+      const state = location.state as any;
+      const displayName = state?.name || id;
+      const queryParams = new URLSearchParams(location.search);
+      const isViewMode = queryParams.get('mode') !== 'edit';
+      steps.push({ label: 'Quotation', path: '/quotationsap' });
+      steps.push({ label: isViewMode ? `Detail ${displayName}` : `Edit ${displayName}` });
+    }
     // Dynamic Fallback
     else {
       const segments = pathname.split('/').filter(Boolean)

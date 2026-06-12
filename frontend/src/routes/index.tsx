@@ -80,6 +80,11 @@ import PurchaseRequisitionAddPage from '../modules/purchaserequisitions/pages/Pu
 import PurchaseRequisitionEditPage from '../modules/purchaserequisitions/pages/PurchaseRequisitionEditPage'
 import PurchaseRequisitionGeneratePoPage from '../modules/purchaserequisitions/pages/PurchaseRequisitionGeneratePoPage'
 
+// Quotation AP Pages
+import QuotationApListPage from '../modules/quotationsap/pages/QuotationApListPage'
+import QuotationApAddPage from '../modules/quotationsap/pages/QuotationApAddPage'
+import QuotationApEditPage from '../modules/quotationsap/pages/QuotationApEditPage'
+
 export default function AppRouter() {
     return (
         <BrowserRouter>
@@ -172,6 +177,11 @@ export default function AppRouter() {
                                     <Route path="/purchaserequisitions/list-pr" element={<PurchaseRequisitionGeneratePoPage />} />
                                     <Route path="/purchaserequisitions/create" element={<PurchaseRequisitionAddPage />} />
                                     <Route path="/purchaserequisitions/:id/edit" element={<PurchaseRequisitionEditPage />} />
+
+                                    {/* Quotation AP Routes */}
+                                    <Route path="/quotationsap" element={<QuotationApListPage />} />
+                                    <Route path="/quotationsap/create" element={<QuotationApAddPage />} />
+                                    <Route path="/quotationsap/:id/edit" element={<QuotationApEditPage />} />
 
                                     {/* Product Routes */}
                                     <Route path="/product" element={<ProductListPage />} />

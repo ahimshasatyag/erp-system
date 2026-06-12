@@ -96,4 +96,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/purchase-requisitions/detail-barang', [\App\Http\Controllers\API\purchaserequisitions\PurchaseRequisitionController::class, 'detailBarang']);
     Route::post('/purchase-requisitions/{id}/ajukan', [\App\Http\Controllers\API\purchaserequisitions\PurchaseRequisitionController::class, 'ajukan']);
     Route::apiResource('purchase-requisitions', \App\Http\Controllers\API\purchaserequisitions\PurchaseRequisitionController::class);
+
+    // Quotations AP Module
+    Route::post('/quotations-ap/confirm', [\App\Http\Controllers\API\quotationsap\QuotationApController::class, 'confirm']);
+    Route::post('/quotations-ap/cancel', [\App\Http\Controllers\API\quotationsap\QuotationApController::class, 'cancel']);
+    Route::post('/quotations-ap/get-mata-uang-default', [\App\Http\Controllers\API\quotationsap\QuotationApController::class, 'getMataUangDefault']);
+    Route::post('/quotations-ap/get-product-detail', [\App\Http\Controllers\API\quotationsap\QuotationApController::class, 'getProductDetail']);
+    Route::post('/quotations-ap/get-lokasi', [\App\Http\Controllers\API\quotationsap\QuotationApController::class, 'getLokasi']);
+    Route::apiResource('quotations-ap', \App\Http\Controllers\API\quotationsap\QuotationApController::class);
 });

@@ -18,4 +18,5 @@ return [
     App\Providers\customercontact\CustomerContactServiceProvider::class,
     App\Providers\suppliers\SupplierServiceProvider::class,
     App\Providers\purchaserequisitions\PurchaseRequisitionServiceProvider::class,
+    App\Providers\quotationsap\QuotationApServiceProvider::class,
 ];
