@@ -74,6 +74,12 @@ import SupplierListPage from '../modules/suppliers/pages/SupplierListPage'
 import SupplierAddPage from '../modules/suppliers/pages/SupplierAddPage'
 import SupplierEditPage from '../modules/suppliers/pages/SupplierEditPage'
 
+// Purchase Requisition Routes
+import PurchaseRequisitionListPage from '../modules/purchaserequisitions/pages/PurchaseRequisitionListPage'
+import PurchaseRequisitionAddPage from '../modules/purchaserequisitions/pages/PurchaseRequisitionAddPage'
+import PurchaseRequisitionEditPage from '../modules/purchaserequisitions/pages/PurchaseRequisitionEditPage'
+import PurchaseRequisitionGeneratePoPage from '../modules/purchaserequisitions/pages/PurchaseRequisitionGeneratePoPage'
+
 export default function AppRouter() {
     return (
         <BrowserRouter>
@@ -160,6 +166,12 @@ export default function AppRouter() {
 
                                     {/* Cek Serial Number Routes */}
                                     <Route path="/cekserialnumber" element={<CekSerialNumberPage />} />
+
+                                    {/* Purchase Requisition Routes */}
+                                    <Route path="/purchaserequisitions" element={<PurchaseRequisitionListPage />} />
+                                    <Route path="/purchaserequisitions/list-pr" element={<PurchaseRequisitionGeneratePoPage />} />
+                                    <Route path="/purchaserequisitions/create" element={<PurchaseRequisitionAddPage />} />
+                                    <Route path="/purchaserequisitions/:id/edit" element={<PurchaseRequisitionEditPage />} />
 
                                     {/* Product Routes */}
                                     <Route path="/product" element={<ProductListPage />} />

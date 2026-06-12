@@ -89,4 +89,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Supplier Module
     Route::apiResource('suppliers', \App\Http\Controllers\API\suppliers\SupplierController::class);
+
+    // Purchase Requisition Module
+    Route::post('/purchase-requisitions/simpan-po', [\App\Http\Controllers\API\purchaserequisitions\PurchaseRequisitionController::class, 'simpanPo']);
+    Route::get('/purchase-requisitions/list-pr', [\App\Http\Controllers\API\purchaserequisitions\PurchaseRequisitionController::class, 'listPr']);
+    Route::post('/purchase-requisitions/detail-barang', [\App\Http\Controllers\API\purchaserequisitions\PurchaseRequisitionController::class, 'detailBarang']);
+    Route::post('/purchase-requisitions/{id}/ajukan', [\App\Http\Controllers\API\purchaserequisitions\PurchaseRequisitionController::class, 'ajukan']);
+    Route::apiResource('purchase-requisitions', \App\Http\Controllers\API\purchaserequisitions\PurchaseRequisitionController::class);
 });

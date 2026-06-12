@@ -294,6 +294,30 @@ export default function Breadcrumb() {
       steps.push({ label: 'Supplier', path: '/suppliers' });
       steps.push({ label: isViewMode ? `Detail ${displayName}` : `Edit ${displayName}` });
     }
+    // Purchase Requisition List
+    else if (pathname === '/purchaserequisitions') {
+      steps.push({ label: 'Purchase Requisition' });
+    }
+    // Purchase Requisition Add
+    else if (pathname === '/purchaserequisitions/create') {
+      steps.push({ label: 'Purchase Requisition', path: '/purchaserequisitions' });
+      steps.push({ label: 'Tambah' });
+    }
+    // Purchase Requisition Edit Route
+    else if (pathname.startsWith('/purchaserequisitions/') && pathname.endsWith('/edit')) {
+      const id = pathname.split('/')[2];
+      const state = location.state as any;
+      const displayName = state?.name || id;
+      const queryParams = new URLSearchParams(location.search);
+      const isViewMode = queryParams.get('mode') !== 'edit';
+      steps.push({ label: 'Purchase Requisition', path: '/purchaserequisitions' });
+      steps.push({ label: isViewMode ? `Detail ${displayName}` : `Edit ${displayName}` });
+    }
+    // Purchase Requisition List PR Route
+    else if (pathname === '/purchaserequisitions/list-pr') {
+      steps.push({ label: 'Purchase Requisition', path: '/purchaserequisitions' });
+      steps.push({ label: 'List PR' });
+    }
     // Dynamic Fallback
     else {
       const segments = pathname.split('/').filter(Boolean)
