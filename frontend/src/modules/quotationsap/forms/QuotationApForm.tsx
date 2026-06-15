@@ -30,14 +30,14 @@ const QuotationApForm: React.FC<QuotationApFormProps> = ({
     isViewMode = false
 }) => {
     const navigate = useNavigate();
-    
+
     // Dropdown Data States
     const [suppliersList, setSuppliersList] = useState<any[]>([]);
     const [gudangList, setGudangList] = useState<any[]>([]);
     const [mataUangList, setMataUangList] = useState<any[]>([]);
     const [lokasiList, setLokasiList] = useState<any[]>([]);
     const [productsList, setProductsList] = useState<any[]>([]);
-    
+
     const [loadingOpts, setLoadingOpts] = useState(false);
     const [fileObj, setFileObj] = useState<File | null>(null);
     const [activeTab, setActiveTab] = useState<'purchase_order' | 'incoming_shipment'>('purchase_order');
@@ -91,10 +91,10 @@ const QuotationApForm: React.FC<QuotationApFormProps> = ({
                     api.get('/mata-uang').catch(() => ({ data: [] })), // Assuming this exists or handled by general tables
                     api.get('/products', { params: { length: 10000 } }).catch(() => ({ data: [] }))
                 ]);
-                
+
                 // Note: The endpoints might need to be adjusted based on actual ERP routes.
                 setSuppliersList(Array.isArray(supRes.data?.data) ? supRes.data.data : []);
-                
+
                 // For gudang, using a placeholder endpoint. Adjust according to real routes.
                 // Normally it might be `/gudang` or similar. We'll set empty arrays if failed.
                 setGudangList([{ id_gudang: '1', nm_gudang: 'Gudang 1' }, { id_gudang: '2', nm_gudang: 'Gudang 2' }]); // Mock fallback
@@ -185,7 +185,7 @@ const QuotationApForm: React.FC<QuotationApFormProps> = ({
                     setValue(`details.${index}.product_deskripsi`, res.product_deskripsi);
                     setValue(`details.${index}.code_product`, res.code_product || '');
                     setValue(`details.${index}.nm_product_satuan`, res.nm_product_satuan || '');
-                    
+
                     if (res.options && Array.isArray(res.options)) {
                         const newOptions = res.options.map((opt: any) => ({
                             nm_product_opt: opt.nm_product_opt,
@@ -208,16 +208,16 @@ const QuotationApForm: React.FC<QuotationApFormProps> = ({
     };
 
     return (
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="w-full bg-white p-4 lg:p-6 min-h-screen">
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="w-full bg-white p-3 lg:p-4">
             {/* Top Bar Actions */}
             <div className="flex items-center gap-2 mb-4 pb-2">
                 {!isViewMode && (
                     <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="px-4 py-1.5 bg-[#c82333] text-white text-[13px] font-medium rounded shadow-sm hover:bg-[#bd2130] transition-colors disabled:opacity-50"
+                        className="flex items-center gap-2 px-4 py-2 bg-[#22c55e] text-white text-[13px] font-medium rounded hover:bg-[#16a34a] transition-colors disabled:opacity-50"
                     >
-                        {isSubmitting ? 'Menyimpan...' : 'Save'}
+                        <i className="fas fa-save"></i> {isSubmitting ? 'Menyimpan...' : 'Save'}
                     </button>
                 )}
 
@@ -228,25 +228,25 @@ const QuotationApForm: React.FC<QuotationApFormProps> = ({
                                 <button
                                     type="button"
                                     onClick={onEdit}
-                                    className="px-4 py-1.5 bg-[#0056b3] text-white text-[13px] font-medium rounded shadow-sm hover:bg-[#004085] transition-colors"
+                                    className="flex items-center gap-2 px-4 py-2 bg-[#0ea5e9] text-white text-[13px] font-medium rounded hover:bg-[#0284c7] transition-colors"
                                 >
-                                    Edit
+                                    <i className="fas fa-edit"></i> Edit
                                 </button>
                                 <button
                                     type="button"
                                     onClick={onConfirm}
-                                    className="px-4 py-1.5 bg-[#28a745] text-white text-[13px] font-medium rounded shadow-sm hover:bg-[#218838] transition-colors"
+                                    className="flex items-center gap-2 px-4 py-2 bg-[#22c55e] text-white text-[13px] font-medium rounded hover:bg-[#16a34a] transition-colors"
                                 >
-                                    Confirm to PO
+                                    <i className="fas fa-check"></i> Confirm to PO
                                 </button>
                             </>
                         )}
                         <button
                             type="button"
                             onClick={onCancel || (() => navigate('/quotationsap'))}
-                            className="px-4 py-1.5 bg-gray-600 text-white text-[13px] font-medium rounded shadow-sm hover:bg-gray-700 transition-colors"
+                            className="flex items-center gap-2 px-4 py-2 bg-[#f59e0b] text-white text-[13px] font-medium rounded hover:bg-[#d97706] transition-colors"
                         >
-                            Kembali
+                            <i className="fas fa-undo"></i> Kembali
                         </button>
                     </>
                 ) : (
@@ -254,16 +254,16 @@ const QuotationApForm: React.FC<QuotationApFormProps> = ({
                         type="button"
                         onClick={onCancel || (() => navigate('/quotationsap'))}
                         disabled={isSubmitting}
-                        className="px-4 py-1.5 bg-[#0056b3] text-white text-[13px] font-medium rounded shadow-sm hover:bg-[#004085] transition-colors disabled:opacity-50"
+                        className="flex items-center gap-2 px-4 py-2 bg-[#f59e0b] text-white text-[13px] font-medium rounded hover:bg-[#d97706] transition-colors disabled:opacity-50"
                     >
-                        Discard
+                        <i className="fas fa-undo"></i> Discard
                     </button>
                 )}
             </div>
 
             {/* Header Form Container */}
-            <div className="bg-[#f8f9fa] border border-gray-200 p-4 mb-6 rounded-sm">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-3">
+            <div className="bg-[#f8f9fa] border border-gray-200 p-3 mb-4 rounded-sm">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-2">
                     {/* Left Column */}
                     <div className="space-y-3">
                         <div className="flex items-center">
@@ -370,13 +370,13 @@ const QuotationApForm: React.FC<QuotationApFormProps> = ({
 
             {/* Tabs */}
             <div className="border-b border-gray-200 flex gap-6 px-2 mb-4">
-                <div 
+                <div
                     onClick={() => setActiveTab('purchase_order')}
                     className={`text-[13px] font-medium pb-2 cursor-pointer ${activeTab === 'purchase_order' ? 'text-gray-800 border-b-2 border-gray-800' : 'text-gray-500 hover:text-gray-800'}`}
                 >
                     Purchase Order
                 </div>
-                <div 
+                <div
                     onClick={() => setActiveTab('incoming_shipment')}
                     className={`text-[13px] font-medium pb-2 cursor-pointer ${activeTab === 'incoming_shipment' ? 'text-gray-800 border-b-2 border-gray-800' : 'text-gray-500 hover:text-gray-800'}`}
                 >
@@ -388,218 +388,244 @@ const QuotationApForm: React.FC<QuotationApFormProps> = ({
             {activeTab === 'purchase_order' && (
                 <div>
                     <div className="mb-3 flex justify-start">
-                    {!isViewMode && (
-                        <button
-                            type="button"
-                            onClick={() => append({ 
-                                id_product: '', 
-                                qty: 1, 
-                                product_price: 0, 
-                                options: [] 
-                            })}
-                            className="flex items-center gap-2 px-4 py-2 bg-[#0ea5e9] text-white text-[13px] font-medium rounded hover:bg-[#0284c7] transition-colors"
-                        >
-                            Tambah Barang
-                        </button>
-                    )}
-                </div>
+                        {!isViewMode && (
+                            <button
+                                type="button"
+                                onClick={() => append({
+                                    id_product: '',
+                                    qty: 1,
+                                    product_price: 0,
+                                    options: []
+                                })}
+                                className="flex items-center gap-2 px-4 py-2 bg-[#0ea5e9] text-white text-[13px] font-medium rounded hover:bg-[#0284c7] transition-colors"
+                            >
+                                Tambah Barang
+                            </button>
+                        )}
+                    </div>
 
-                {errors.details && <p className="text-red-500 text-sm mb-2">{errors.details.message}</p>}
+                    {errors.details && <p className="text-red-500 text-sm mb-2">{errors.details.message}</p>}
 
-                <div className="mt-2 border border-gray-200 rounded pb-40">
-                  <div className="overflow-visible">
-                    <table className="min-w-full divide-y divide-gray-200 text-[13px] whitespace-nowrap">
-                        <thead className="bg-[#f9f9f9] border-b border-gray-200">
-                            <tr>
-                                <th className="px-3 py-2 text-center font-bold text-gray-600 w-12 border-r border-gray-200">No</th>
-                                <th className="px-3 py-2 text-center font-bold text-gray-600 border-r border-gray-200 min-w-[200px]">Kode Barang</th>
-                                <th className="px-3 py-2 text-center font-bold text-gray-600 border-r border-gray-200 min-w-[200px]">Nama Barang</th>
-                                <th className="px-3 py-2 text-center font-bold text-gray-600 border-r border-gray-200 min-w-[150px]">Deksripsi</th>
-                                <th className="px-3 py-2 text-center font-bold text-gray-600 border-r border-gray-200 w-[150px]">Notes</th>
-                                <th className="px-3 py-2 text-center font-bold text-gray-600 border-r border-gray-200 w-[100px]">Satuan</th>
-                                <th className="px-3 py-2 text-center font-bold text-gray-600 border-r border-gray-200 w-[120px]">Price</th>
-                                <th className="px-3 py-2 text-center font-bold text-gray-600 border-r border-gray-200 w-[80px]">Qty</th>
-                                <th className="px-3 py-2 text-center font-bold text-gray-600 border-r border-gray-200 w-[120px]">Subtotal</th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-[#fcfcfc] divide-y divide-gray-200">
-                            {fields.length === 0 ? (
-                                <tr>
-                                    <td colSpan={9} className="px-3 py-4 text-center text-gray-500 bg-[#f9f9f9]">
-                                        Tidak ada barang ditambahkan
-                                    </td>
-                                </tr>
-                            ) : (
-                                fields.map((field, index) => {
-                                    const currentDetail = watchDetails?.[index] || {};
-                                    const subtotal = calculateSubtotal(currentDetail.product_price || 0, currentDetail.qty || 0);
+                    <div className="mt-2 border border-gray-200 rounded pb-40">
+                        <div className="overflow-visible">
+                            <table className="min-w-full divide-y divide-gray-200 text-[13px] whitespace-nowrap">
+                                <thead className="bg-[#f9f9f9] border-b border-gray-200">
+                                    <tr>
+                                        <th className="px-2 py-1.5 text-center font-bold text-gray-600 w-[3%] border-r border-gray-200">No</th>
+                                        <th className="px-2 py-1.5 text-center font-bold text-gray-600 border-r border-gray-200 w-[15%] min-w-[100px]">Kode Barang</th>
+                                        <th className="px-2 py-1.5 text-center font-bold text-gray-600 border-r border-gray-200 w-[18%] min-w-[140px]">Nama Barang</th>
+                                        <th className="px-2 py-1.5 text-center font-bold text-gray-600 border-r border-gray-200 w-[18%] min-w-[140px]">Deksripsi</th>
+                                        <th className="px-2 py-1.5 text-center font-bold text-gray-600 border-r border-gray-200 w-[16%] min-w-[120px]">Notes</th>
+                                        <th className="px-2 py-1.5 text-center font-bold text-gray-600 border-r border-gray-200 w-[5%] min-w-[60px]">Satuan</th>
+                                        <th className="px-2 py-1.5 text-center font-bold text-gray-600 border-r border-gray-200 w-[12%] min-w-[110px]">Price</th>
+                                        <th className="px-2 py-1.5 text-center font-bold text-gray-600 border-r border-gray-200 w-[5%] min-w-[60px]">Qty</th>
+                                        <th className="px-2 py-1.5 text-center font-bold text-gray-600 border-r border-gray-200 w-[8%] min-w-[90px]">Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="bg-[#fcfcfc] divide-y divide-gray-200">
+                                    {fields.length === 0 ? (
+                                        <tr>
+                                            <td colSpan={9} className="px-3 py-4 text-center text-gray-500 bg-[#f9f9f9]">
+                                                Tidak ada barang ditambahkan
+                                            </td>
+                                        </tr>
+                                    ) : (
+                                        fields.map((field, index) => {
+                                            const currentDetail = watchDetails?.[index] || {};
+                                            const subtotal = calculateSubtotal(currentDetail.product_price || 0, currentDetail.qty || 0);
 
-                                    return (
-                                        <React.Fragment key={field.id}>
-                                            <tr className="hover:bg-gray-50">
-                                                <td className="px-2 py-2 text-center border-r border-gray-200">
-                                                    <div className="flex items-center justify-center gap-2">
-                                                        {!isViewMode && (
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => toggleActionRow(index)}
-                                                                className={`text-white w-[18px] h-[18px] min-w-[18px] rounded-full flex items-center justify-center text-[10px] shadow-sm transition-colors ${expandedActionRows[index] ? 'bg-[#ff6b6b] hover:bg-[#fa5252]' : 'bg-[#22c55e] hover:bg-[#16a34a]'}`}
-                                                            >
-                                                                <i className={`fas fa-${expandedActionRows[index] ? 'minus' : 'plus'}`}></i>
-                                                            </button>
-                                                        )}
-                                                        <span>{index + 1}</span>
-                                                    </div>
-                                                </td>
-                                                <td className="px-2 py-2 border-r border-gray-200">
-                                                    <Controller
-                                                        control={control}
-                                                        name={`details.${index}.id_product`}
-                                                        render={({ field: selectField }) => (
-                                                            <SearchablePaginatedSelect
-                                                                value={selectField.value}
-                                                                onChange={(val) => {
-                                                                    selectField.onChange(val);
-                                                                    handleProductChange(index, val);
-                                                                }}
-                                                                options={productsList.map(p => ({
-                                                                    value: String(p.id_product),
-                                                                    label: `${p.code_product}`
-                                                                }))}
-                                                                placeholder="Pilih Kode Barang"
-                                                                disabled={isSubmitting || isViewMode || loadingOpts}
-                                                                error={errors.details?.[index]?.id_product?.message}
+                                            return (
+                                                <React.Fragment key={field.id}>
+                                                    <tr className="hover:bg-gray-50">
+                                                        <td className="px-2 py-2 text-center border-r border-gray-200">
+                                                            <div className="flex items-center justify-center gap-2">
+                                                                {!isViewMode && (
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() => toggleActionRow(index)}
+                                                                        className={`text-white w-[18px] h-[18px] min-w-[18px] rounded-full flex items-center justify-center text-[10px] shadow-sm transition-colors ${expandedActionRows[index] ? 'bg-[#ff6b6b] hover:bg-[#fa5252]' : 'bg-[#22c55e] hover:bg-[#16a34a]'}`}
+                                                                    >
+                                                                        <i className={`fas fa-${expandedActionRows[index] ? 'minus' : 'plus'}`}></i>
+                                                                    </button>
+                                                                )}
+                                                                <span>{index + 1}</span>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-2 py-2 border-r border-gray-200">
+                                                            <Controller
+                                                                control={control}
+                                                                name={`details.${index}.id_product`}
+                                                                render={({ field: selectField }) => (
+                                                                    <SearchablePaginatedSelect
+                                                                        value={selectField.value}
+                                                                        onChange={(val) => {
+                                                                            selectField.onChange(val);
+                                                                            handleProductChange(index, val);
+                                                                        }}
+                                                                        options={productsList.map(p => ({
+                                                                            value: String(p.id_product),
+                                                                            label: `${p.code_product}`
+                                                                        }))}
+                                                                        placeholder="Pilih Kode Barang"
+                                                                        disabled={isSubmitting || isViewMode || loadingOpts}
+                                                                        error={errors.details?.[index]?.id_product?.message}
+                                                                    />
+                                                                )}
                                                             />
-                                                        )}
-                                                    />
-                                                </td>
-                                                <td className="px-2 py-2 border-r border-gray-200">
-                                                    <input
-                                                        type="text"
-                                                        value={currentDetail.nm_product || ''}
-                                                        className="w-full px-2 py-1 text-[13px] bg-transparent outline-none border-none text-gray-600"
-                                                        disabled
-                                                    />
-                                                </td>
-                                                <td className="px-2 py-2 border-r border-gray-200 align-top">
-                                                    <textarea
-                                                        {...register(`details.${index}.product_deskripsi` as const)}
-                                                        className="w-full px-2 py-1 text-[13px] bg-transparent outline-none border-none resize-none text-gray-600"
-                                                        disabled
-                                                        rows={2}
-                                                    />
-                                                </td>
-                                                <td className="px-2 py-2 border-r border-gray-200 align-top">
-                                                    <textarea
-                                                        {...register(`details.${index}.notes` as const)}
-                                                        className="w-full px-2 py-1 text-[13px] border border-gray-300 rounded outline-none disabled:bg-transparent disabled:border-transparent resize-none bg-white"
-                                                        disabled={isSubmitting || isViewMode}
-                                                        rows={2}
-                                                    />
-                                                </td>
-                                                <td className="px-2 py-2 border-r border-gray-200 text-center">
-                                                    <input
-                                                        type="text"
-                                                        {...register(`details.${index}.nm_product_satuan` as const)}
-                                                        className="w-full px-2 py-1 text-[13px] bg-transparent outline-none text-center border-none text-gray-600"
-                                                        disabled
-                                                    />
-                                                </td>
-                                                <td className="px-2 py-2 border-r border-gray-200">
-                                                    <input
-                                                        type="number"
-                                                        {...register(`details.${index}.product_price` as const)}
-                                                        className={`w-full px-2 py-1 text-[13px] border rounded outline-none text-right disabled:bg-transparent disabled:border-transparent bg-white ${errors.details?.[index]?.product_price ? 'border-red-500' : 'border-gray-300'}`}
-                                                        disabled={isSubmitting || isViewMode}
-                                                    />
-                                                </td>
-                                                <td className="px-2 py-2 border-r border-gray-200">
-                                                    <input
-                                                        type="number"
-                                                        {...register(`details.${index}.qty` as const)}
-                                                        className={`w-full px-2 py-1 text-[13px] border rounded outline-none text-center disabled:bg-transparent disabled:border-transparent bg-white ${errors.details?.[index]?.qty ? 'border-red-500' : 'border-gray-300'}`}
-                                                        disabled={isSubmitting || isViewMode}
-                                                        min="1"
-                                                    />
-                                                </td>
-                                                <td className="px-2 py-2 text-right border-r border-gray-200 align-top pt-3 font-medium">
-                                                    {formatRupiah(subtotal)}
-                                                </td>
-                                            </tr>
-                                            
-                                            {!isViewMode && expandedActionRows[index] && (
-                                                <tr className="bg-gray-50/50">
-                                                    <td className="px-3 py-2 text-center font-semibold text-gray-700 border-r border-gray-200">
-                                                        Aksi
-                                                    </td>
-                                                    <td colSpan={8} className="px-3 py-2">
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => remove(index)}
-                                                            className="text-white bg-[#ff6b6b] hover:bg-[#fa5252] w-8 h-8 rounded flex items-center justify-center shadow-sm"
-                                                            title="Hapus baris"
-                                                        >
-                                                            <i className="fas fa-trash"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            )}
+                                                        </td>
+                                                        <td className="px-2 py-2 border-r border-gray-200 align-top">
+                                                            <textarea
+                                                                value={currentDetail.nm_product || ''}
+                                                                className="w-full px-2 py-1 text-[13px] bg-transparent outline-none border-none resize-none text-gray-600"
+                                                                disabled
+                                                                rows={2}
+                                                            />
+                                                        </td>
+                                                        <td className="px-2 py-2 border-r border-gray-200 align-top">
+                                                            <textarea
+                                                                {...register(`details.${index}.product_deskripsi` as const)}
+                                                                className="w-full px-2 py-1 text-[13px] bg-transparent outline-none border-none resize-none text-gray-600"
+                                                                disabled
+                                                                rows={2}
+                                                            />
+                                                        </td>
+                                                        <td className="px-2 py-2 border-r border-gray-200 align-top">
+                                                            <textarea
+                                                                {...register(`details.${index}.notes` as const)}
+                                                                className="w-full px-2 py-1 text-[13px] border border-gray-300 rounded outline-none disabled:bg-transparent disabled:border-transparent resize-none bg-white"
+                                                                disabled={isSubmitting || isViewMode}
+                                                                rows={2}
+                                                            />
+                                                        </td>
+                                                        <td className="px-2 py-2 border-r border-gray-200 text-center">
+                                                            <input
+                                                                type="text"
+                                                                {...register(`details.${index}.nm_product_satuan` as const)}
+                                                                className="w-full px-2 py-1 text-[13px] bg-transparent outline-none text-center border-none text-gray-600"
+                                                                disabled
+                                                            />
+                                                        </td>
+                                                        <td className="px-2 py-2 border-r border-gray-200">
+                                                            <Controller
+                                                                control={control}
+                                                                name={`details.${index}.product_price`}
+                                                                render={({ field: { onChange, value } }) => {
+                                                                    const displayValue = value ? new Intl.NumberFormat('id-ID').format(Number(value)) : '';
+                                                                    return (
+                                                                        <input
+                                                                            type="text"
+                                                                            value={displayValue}
+                                                                            onChange={(e) => {
+                                                                                const rawValue = e.target.value.replace(/\D/g, '');
+                                                                                onChange(rawValue ? Number(rawValue) : 0);
+                                                                            }}
+                                                                            className={`w-full px-2 py-1 text-[13px] border rounded outline-none text-right disabled:bg-transparent disabled:border-transparent bg-white ${errors.details?.[index]?.product_price ? 'border-red-500' : 'border-gray-300'}`}
+                                                                            disabled={isSubmitting || isViewMode}
+                                                                        />
+                                                                    );
+                                                                }}
+                                                            />
+                                                        </td>
+                                                        <td className="px-2 py-2 border-r border-gray-200">
+                                                            <input
+                                                                type="number"
+                                                                {...register(`details.${index}.qty` as const)}
+                                                                className={`w-full px-2 py-1 text-[13px] border rounded outline-none text-center disabled:bg-transparent disabled:border-transparent bg-white ${errors.details?.[index]?.qty ? 'border-red-500' : 'border-gray-300'}`}
+                                                                disabled={isSubmitting || isViewMode}
+                                                                min="1"
+                                                            />
+                                                        </td>
+                                                        <td className="px-2 py-2 text-right border-r border-gray-200 align-top pt-3 font-medium">
+                                                            {formatRupiah(subtotal)}
+                                                        </td>
+                                                    </tr>
 
-                                            {/* Sub-table for Options */}
-                                            {currentDetail.options && currentDetail.options.length > 0 && (
-                                                <tr className="bg-gray-50/50">
-                                                    <td colSpan={9} className="px-10 py-3 border-b border-gray-200">
-                                                        <table className="w-full border border-gray-300 rounded overflow-hidden">
-                                                            <thead className="bg-gray-100 border-b border-gray-300">
-                                                                <tr>
-                                                                    <th className="px-3 py-1 text-left text-[12px] font-bold text-gray-600 border-r border-gray-300">Nama Option</th>
-                                                                    <th className="px-3 py-1 text-center text-[12px] font-bold text-gray-600 border-r border-gray-300">Harga</th>
-                                                                    <th className="px-3 py-1 text-center text-[12px] font-bold text-gray-600">Pilih</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody className="bg-white divide-y divide-gray-200">
-                                                                {currentDetail.options.map((opt: any, optIndex: number) => (
-                                                                    <tr key={optIndex}>
-                                                                        <td className="px-3 py-1 text-[12px] border-r border-gray-200">
-                                                                            <input 
-                                                                                type="text" 
-                                                                                {...register(`details.${index}.options.${optIndex}.nm_product_opt`)} 
-                                                                                className="w-full bg-transparent outline-none" 
-                                                                                readOnly 
-                                                                            />
-                                                                        </td>
-                                                                        <td className="px-3 py-1 border-r border-gray-200">
-                                                                            <input 
-                                                                                type="number" 
-                                                                                {...register(`details.${index}.options.${optIndex}.harga`)} 
-                                                                                className="w-full text-right bg-transparent border border-gray-200 rounded px-1 outline-none text-[12px] disabled:bg-transparent" 
-                                                                                disabled={isSubmitting || isViewMode}
-                                                                            />
-                                                                        </td>
-                                                                        <td className="px-3 py-1 text-center">
-                                                                            <input 
-                                                                                type="checkbox" 
-                                                                                {...register(`details.${index}.options.${optIndex}.checked`)} 
-                                                                                disabled={isSubmitting || isViewMode}
-                                                                                className="cursor-pointer"
-                                                                            />
-                                                                        </td>
-                                                                    </tr>
-                                                                ))}
-                                                            </tbody>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            )}
-                                        </React.Fragment>
-                                    );
-                                })
-                            )}
-                        </tbody>
-                    </table>
-                  </div>
+                                                    {!isViewMode && expandedActionRows[index] && (
+                                                        <tr className="bg-gray-50/50">
+                                                            <td className="px-3 py-2 text-center font-semibold text-gray-700 border-r border-gray-200">
+                                                                Aksi
+                                                            </td>
+                                                            <td colSpan={8} className="px-3 py-2">
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => remove(index)}
+                                                                    className="text-white bg-[#ff6b6b] hover:bg-[#fa5252] w-8 h-8 rounded flex items-center justify-center shadow-sm"
+                                                                    title="Hapus baris"
+                                                                >
+                                                                    <i className="fas fa-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    )}
+
+                                                    {/* Sub-table for Options */}
+                                                    {currentDetail.options && currentDetail.options.length > 0 && (
+                                                        <tr className="bg-gray-50/50">
+                                                            <td colSpan={9} className="px-10 py-3 border-b border-gray-200">
+                                                                <table className="w-full border border-gray-300 rounded overflow-hidden">
+                                                                    <thead className="bg-gray-100 border-b border-gray-300">
+                                                                        <tr>
+                                                                            <th className="px-3 py-1 text-left text-[12px] font-bold text-gray-600 border-r border-gray-300">Nama Option</th>
+                                                                            <th className="px-3 py-1 text-center text-[12px] font-bold text-gray-600 border-r border-gray-300">Harga</th>
+                                                                            <th className="px-3 py-1 text-center text-[12px] font-bold text-gray-600">Pilih</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody className="bg-white divide-y divide-gray-200">
+                                                                        {currentDetail.options.map((opt: any, optIndex: number) => (
+                                                                            <tr key={optIndex}>
+                                                                                <td className="px-3 py-1 text-[12px] border-r border-gray-200">
+                                                                                    <input
+                                                                                        type="text"
+                                                                                        {...register(`details.${index}.options.${optIndex}.nm_product_opt`)}
+                                                                                        className="w-full bg-transparent outline-none"
+                                                                                        readOnly
+                                                                                    />
+                                                                                </td>
+                                                                                <td className="px-3 py-1 border-r border-gray-200">
+                                                                                    <Controller
+                                                                                        control={control}
+                                                                                        name={`details.${index}.options.${optIndex}.harga`}
+                                                                                        render={({ field: { onChange, value } }) => {
+                                                                                            const displayValue = value ? new Intl.NumberFormat('id-ID').format(Number(value)) : '';
+                                                                                            return (
+                                                                                                <input
+                                                                                                    type="text"
+                                                                                                    value={displayValue}
+                                                                                                    onChange={(e) => {
+                                                                                                        const rawValue = e.target.value.replace(/\D/g, '');
+                                                                                                        onChange(rawValue ? Number(rawValue) : 0);
+                                                                                                    }}
+                                                                                                    className="w-full text-right bg-transparent border border-gray-200 rounded px-1 outline-none text-[12px] disabled:bg-transparent"
+                                                                                                    disabled={isSubmitting || isViewMode}
+                                                                                                />
+                                                                                            );
+                                                                                        }}
+                                                                                    />
+                                                                                </td>
+                                                                                <td className="px-3 py-1 text-center">
+                                                                                    <input
+                                                                                        type="checkbox"
+                                                                                        {...register(`details.${index}.options.${optIndex}.checked`)}
+                                                                                        disabled={isSubmitting || isViewMode}
+                                                                                        className="cursor-pointer"
+                                                                                    />
+                                                                                </td>
+                                                                            </tr>
+                                                                        ))}
+                                                                    </tbody>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    )}
+                                                </React.Fragment>
+                                            );
+                                        })
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-              </div>
             )}
 
             {activeTab === 'incoming_shipment' && (
@@ -617,7 +643,7 @@ const QuotationApForm: React.FC<QuotationApFormProps> = ({
                                 />
                             </div>
                         </div>
-                        
+
                         <div className="flex items-center">
                             <label className="w-[35%] text-[13px] text-gray-600">Specific Location</label>
                             <div className="w-[65%]">

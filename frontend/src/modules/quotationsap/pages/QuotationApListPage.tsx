@@ -19,7 +19,7 @@ const QuotationApListPage: React.FC = () => {
             return res.data;
         },
     });
-    const menuTitle = menuInfo?.data?.nm_menu || menuInfo?.nm_menu || 'Purchase Quotation';
+    const menuTitle = menuInfo?.data?.nm_menu || menuInfo?.nm_menu || 'Quotation AP';
 
     const handleSearch = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
@@ -32,15 +32,15 @@ const QuotationApListPage: React.FC = () => {
     };
 
     return (
-        <div className="w-full min-h-screen py-2 px-6">
-            <div className="flex justify-between items-center mb-6 pt-2">
-                <p className="text-[32px] font-normal text-[#3f2a2a] tracking-tight">{menuTitle}</p>
-                <div className="text-[13px] text-gray-500 font-medium">EMM Service / {menuTitle}</div>
+        <div className="w-full min-h-screen py-2 px-4">
+            <div className="flex justify-between items-center mb-4 pt-2">
+                <p className="text-2xl font-semibold text-[#3f2a2a] tracking-tight">{menuTitle}</p>
+                <div className="text-[12px] text-gray-500 font-medium">EMM Service / {menuTitle}</div>
             </div>
 
             <div className="bg-white rounded shadow-sm border border-gray-200">
-                <div className="p-6">
-                    <div className="flex justify-start mb-6 gap-2">
+                <div className="p-4">
+                    <div className="flex justify-start mb-4 gap-2">
                         <Link
                             to="/quotationsap/create"
                             className="bg-[#20c997] hover:bg-[#1ba87e] text-white px-3 py-1.5 rounded text-[13px] font-bold inline-flex items-center"

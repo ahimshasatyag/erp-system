@@ -50,61 +50,58 @@ const SupplierForm: React.FC<SupplierFormProps> = ({
     });
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <div className="bg-white dark:bg-[#1f2028] shadow rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-                <div className="flex justify-between items-center mb-6">
-                    <h4 className="text-xl font-bold text-gray-800 dark:text-gray-100">
-                        {isEditMode ? 'Supplier Details' : 'Tambah Supplier'}
-                    </h4>
-                    <div className="flex gap-2">
-                        {isEditMode ? (
-                            <>
-                                {onCancel && (
-                                    <button
-                                        type="button"
-                                        onClick={onCancel}
-                                        className="flex items-center gap-2 px-4 py-2 bg-[#f59e0b] text-white text-[13px] font-medium rounded hover:bg-[#d97706] transition-colors"
-                                    >
-                                        <i className="fas fa-undo"></i>
-                                        Batal
-                                    </button>
-                                )}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <div className="flex justify-start items-center pb-2">
+                <div className="flex gap-2">
+                    {isEditMode ? (
+                        <>
+                            <button
+                                type="submit"
+                                disabled={isLoading}
+                                className="flex items-center gap-2 px-4 py-2 bg-[#22c55e] text-white text-[13px] font-medium rounded hover:bg-[#16a34a] transition-colors disabled:opacity-50"
+                            >
+                                <i className="fas fa-save"></i>
+                                {isLoading ? 'Menyimpan...' : 'Save'}
+                            </button>
+                            {onCancel && (
                                 <button
-                                    type="submit"
-                                    disabled={isLoading}
-                                    className="flex items-center gap-2 px-4 py-2 bg-[#22c55e] text-white text-[13px] font-medium rounded hover:bg-[#16a34a] transition-colors disabled:opacity-50"
+                                    type="button"
+                                    onClick={onCancel}
+                                    className="flex items-center gap-2 px-4 py-2 bg-[#f59e0b] text-white text-[13px] font-medium rounded hover:bg-[#d97706] transition-colors"
                                 >
-                                    <i className="fas fa-save"></i>
-                                    {isLoading ? 'Menyimpan...' : 'Save'}
+                                    <i className="fas fa-undo"></i>
+                                    Discard
                                 </button>
-                            </>
-                        ) : (
-                            <>
-                                {onBack && (
-                                    <button
-                                        type="button"
-                                        onClick={onBack}
-                                        className="flex items-center gap-2 px-4 py-2 bg-[#6b7280] text-white text-[13px] font-medium rounded hover:bg-[#4b5563] transition-colors"
-                                    >
-                                        <i className="fas fa-arrow-left"></i>
-                                        Kembali
-                                    </button>
-                                )}
-                                {onEdit && (
-                                    <button
-                                        type="button"
-                                        onClick={onEdit}
-                                        className="flex items-center gap-2 px-4 py-2 bg-[#0ea5e9] text-white text-[13px] font-medium rounded hover:bg-[#0284c7] transition-colors"
-                                    >
-                                        <i className="fas fa-edit"></i>
-                                        Edit
-                                    </button>
-                                )}
-                            </>
-                        )}
-                    </div>
+                            )}
+                        </>
+                    ) : (
+                        <>
+                            {onEdit && (
+                                <button
+                                    type="button"
+                                    onClick={onEdit}
+                                    className="flex items-center gap-2 px-4 py-2 bg-[#0ea5e9] text-white text-[13px] font-medium rounded hover:bg-[#0284c7] transition-colors"
+                                >
+                                    <i className="fas fa-edit"></i>
+                                    Edit
+                                </button>
+                            )}
+                            {onBack && (
+                                <button
+                                    type="button"
+                                    onClick={onBack}
+                                    className="flex items-center gap-2 px-4 py-2 bg-[#f59e0b] text-white text-[13px] font-medium rounded hover:bg-[#d97706] transition-colors"
+                                >
+                                    <i className="fas fa-undo"></i>
+                                    Kembali
+                                </button>
+                            )}
+                        </>
+                    )}
                 </div>
+            </div>
 
+            <div className="bg-[#f8f9fa] border border-gray-200 p-3 mb-4 rounded-sm">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                     {/* Logo */}
                     <div className="col-span-1 lg:col-span-2 flex flex-col items-center">
@@ -223,11 +220,8 @@ const SupplierForm: React.FC<SupplierFormProps> = ({
             </div>
 
             {/* Contacts Table */}
-            <div className="bg-white dark:bg-[#1f2028] shadow rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-                <div className="flex justify-between items-center mb-6">
-                    <h4 className="text-xl font-bold text-gray-800 dark:text-gray-100">
-                        Contacts
-                    </h4>
+            <div className="mt-2 border border-gray-200 rounded p-4 pb-10">
+                <div className="flex justify-between items-center mb-4">
                     {isEditMode && (
                         <button
                             type="button"

@@ -39,14 +39,14 @@ const PurchaseRequisitionAddPage: React.FC = () => {
     };
 
     return (
-        <div className="w-full min-h-screen py-2 px-6">
-            <div className="flex justify-between items-center mb-6 pt-2">
-                <p className="text-[32px] font-normal text-[#3f2a2a] tracking-tight">Tambah {menuTitle}</p>
-                <div className="text-[13px] text-gray-500 font-medium">EMM Master / {menuTitle} / Tambah</div>
+        <div className="w-full min-h-screen py-2 px-4">
+            <div className="flex justify-between items-center mb-4 pt-2">
+                <p className="text-2xl font-semibold text-[#3f2a2a] tracking-tight">Tambah {menuTitle}</p>
+                <div className="text-[12px] text-gray-500 font-medium">EMM Master / {menuTitle} / Tambah</div>
             </div>
 
             <div className="bg-white rounded shadow-sm border border-gray-200">
-                <div className="p-6">
+                <div className="p-2">
                     <PurchaseRequisitionForm onSubmit={handleSubmit} isSubmitting={isSubmitting} />
                 </div>
             </div>

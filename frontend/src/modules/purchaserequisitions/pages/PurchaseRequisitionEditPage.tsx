@@ -93,7 +93,7 @@ const PurchaseRequisitionEditPage: React.FC = () => {
 
     if (loading) {
         return (
-            <div className="w-full min-h-screen py-2 px-6 flex items-center justify-center">
+        <div className="w-full min-h-screen py-2 px-4 flex items-center justify-center">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#20c997]"></div>
             </div>
         );
@@ -101,7 +101,7 @@ const PurchaseRequisitionEditPage: React.FC = () => {
 
     if (error || !initialData) {
         return (
-            <div className="w-full min-h-screen py-2 px-6 flex flex-col items-center justify-center">
+            <div className="w-full min-h-screen py-2 px-4 flex flex-col items-center justify-center">
                 <p className="text-red-500 mb-4">{error || 'Data tidak ditemukan'}</p>
                 <button onClick={() => navigate('/purchaserequisitions')} className="px-4 py-2 bg-gray-200 rounded">Kembali</button>
             </div>
@@ -111,14 +111,14 @@ const PurchaseRequisitionEditPage: React.FC = () => {
     // Usually can only edit if status is DRAFT
     // But we let form handle the view mode logic based on its props
     return (
-        <div className="w-full min-h-screen py-2 px-6">
-            <div className="flex justify-between items-center mb-6 pt-2">
-                <p className="text-[32px] font-normal text-[#3f2a2a] tracking-tight">{isViewMode ? `Detail ${menuTitle}` : `Edit ${menuTitle}`}</p>
-                <div className="text-[13px] text-gray-500 font-medium">EMM Master / {menuTitle} / {isViewMode ? 'Detail' : 'Edit'}</div>
+        <div className="w-full min-h-screen py-2 px-4">
+            <div className="flex justify-between items-center mb-4 pt-2">
+                <p className="text-2xl font-semibold text-[#3f2a2a] tracking-tight">{isViewMode ? `Detail ${menuTitle}` : `Edit ${menuTitle}`}</p>
+                <div className="text-[12px] text-gray-500 font-medium">EMM Master / {menuTitle} / {isViewMode ? 'Detail' : 'Edit'}</div>
             </div>
 
             <div className="bg-white rounded shadow-sm border border-gray-200">
-                <div className="p-6">
+                <div className="p-2">
                     <PurchaseRequisitionForm 
                         initialData={initialData} 
                         onSubmit={handleSubmit} 

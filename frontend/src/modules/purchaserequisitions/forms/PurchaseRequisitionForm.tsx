@@ -124,62 +124,116 @@ const PurchaseRequisitionForm: React.FC<PurchaseRequisitionFormProps> = ({
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-4">
-                {/* Left Column */}
-                <div className="space-y-2">
-                    <div className="flex border border-gray-200 rounded-sm">
-                        <div className="w-[35%] bg-gray-50 p-2 flex items-center justify-between text-[13px] font-bold text-gray-600 border-r border-gray-200">
-                            <span>Responsible</span><span>:</span>
-                        </div>
-                        <div className="w-[65%] p-1.5">
-                            <Controller
-                                control={control}
-                                name="username"
-                                render={({ field }) => (
-                                    <SearchablePaginatedSelect
-                                        value={field.value}
-                                        onChange={field.onChange}
-                                        options={usersList.map(u => ({
-                                            value: u.username || String(u.id),
-                                            label: u.nm_users || u.name || u.username || 'Unknown User'
-                                        }))}
-                                        placeholder="Select Responsible"
-                                        disabled={isSubmitting || isViewMode || loadingUsers}
-                                        error={errors.username?.message}
-                                    />
-                                )}
-                            />
+            {/* Top Actions */}
+            <div className="flex items-center gap-2 mb-4 pb-2">
+                {!isViewMode && (
+                    <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="flex items-center gap-2 px-4 py-2 bg-[#22c55e] text-white text-[13px] font-medium rounded hover:bg-[#16a34a] transition-colors disabled:opacity-50"
+                    >
+                        <i className="fas fa-save"></i> {isSubmitting ? 'Menyimpan...' : 'Save'}
+                    </button>
+                )}
+
+                {isViewMode ? (
+                    <>
+                        {initialData?.status_pr === 'DRAFT' && (
+                            <>
+                                <button
+                                    type="button"
+                                    onClick={onEdit}
+                                    className="flex items-center gap-2 px-4 py-2 bg-[#0ea5e9] text-white text-[13px] font-medium rounded hover:bg-[#0284c7] transition-colors"
+                                >
+                                    <i className="fas fa-edit"></i> Edit
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={onConfirm}
+                                    className="flex items-center gap-2 px-4 py-2 bg-[#22c55e] text-white text-[13px] font-medium rounded hover:bg-[#16a34a] transition-colors"
+                                >
+                                    <i className="fas fa-check"></i> Confirm
+                                </button>
+                            </>
+                        )}
+                        <button
+                            type="button"
+                            onClick={onCancel || (() => navigate('/purchaserequisitions'))}
+                            className="flex items-center gap-2 px-4 py-2 bg-[#f59e0b] text-white text-[13px] font-medium rounded hover:bg-[#d97706] transition-colors"
+                        >
+                            <i className="fas fa-undo"></i> Kembali
+                        </button>
+                    </>
+                ) : (
+                    <button
+                        type="button"
+                        onClick={onCancel || (() => navigate('/purchaserequisitions'))}
+                        disabled={isSubmitting}
+                        className="flex items-center gap-2 px-4 py-2 bg-[#f59e0b] text-white text-[13px] font-medium rounded hover:bg-[#d97706] transition-colors disabled:opacity-50"
+                    >
+                        <i className="fas fa-undo"></i> Discard
+                    </button>
+                )}
+            </div>
+
+            <div className="bg-[#f8f9fa] border border-gray-200 p-3 mb-4 rounded-sm">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-2">
+                    {/* Left Column */}
+                    <div className="space-y-2">
+                        <div className="flex border border-gray-200 rounded-sm">
+                            <div className="w-[35%] bg-gray-50 p-2 flex items-center justify-between text-[13px] font-bold text-gray-600 border-r border-gray-200">
+                                <span>Responsible</span><span>:</span>
+                            </div>
+                            <div className="w-[65%] p-1.5">
+                                <Controller
+                                    control={control}
+                                    name="username"
+                                    render={({ field }) => (
+                                        <SearchablePaginatedSelect
+                                            value={field.value}
+                                            onChange={field.onChange}
+                                            options={usersList.map(u => ({
+                                                value: u.username || String(u.id),
+                                                label: u.nm_users || u.name || u.username || 'Unknown User'
+                                            }))}
+                                            placeholder="Select Responsible"
+                                            disabled={isSubmitting || isViewMode || loadingUsers}
+                                            error={errors.username?.message}
+                                        />
+                                    )}
+                                />
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                {/* Right Column */}
-                <div className="space-y-2">
-                    <div className="flex border border-gray-200 rounded-sm">
-                        <div className="w-[35%] bg-gray-50 p-2 flex items-center justify-between text-[13px] font-bold text-gray-600 border-r border-gray-200">
-                            <span>Requisition Date</span><span>:</span>
+                    {/* Right Column */}
+                    <div className="space-y-2">
+                        <div className="flex border border-gray-200 rounded-sm">
+                            <div className="w-[35%] bg-gray-50 p-2 flex items-center justify-between text-[13px] font-bold text-gray-600 border-r border-gray-200">
+                                <span>Requisition Date</span><span>:</span>
+                            </div>
+                            <div className="w-[65%] p-1.5">
+                                <input
+                                    type="date"
+                                    {...register('date_request')}
+                                    className={`w-full px-2 py-1 text-[13px] border rounded outline-none ${errors.date_request ? 'border-red-500' : 'border-gray-300'}`}
+                                    disabled={isSubmitting || isViewMode}
+                                />
+                            </div>
                         </div>
-                        <div className="w-[65%] p-1.5">
-                            <input
-                                type="date"
-                                {...register('date_request')}
-                                className={`w-full px-2 py-1 text-[13px] border rounded outline-none ${errors.date_request ? 'border-red-500' : 'border-gray-300'}`}
-                                disabled={isSubmitting || isViewMode}
-                            />
-                        </div>
-                    </div>
 
-                    <div className="flex border border-gray-200 rounded-sm">
-                        <div className="w-[35%] bg-gray-50 p-2 flex items-center justify-between text-[13px] font-bold text-gray-600 border-r border-gray-200">
-                            <span>Requisition Deadline</span><span>:</span>
-                        </div>
-                        <div className="w-[65%] p-1.5">
-                            <input
-                                type="date"
-                                {...register('date_deadline')}
-                                className={`w-full px-2 py-1 text-[13px] border rounded outline-none ${errors.date_deadline ? 'border-red-500' : 'border-gray-300'}`}
-                                disabled={isSubmitting || isViewMode}
-                            />
+                        <div className="flex border border-gray-200 rounded-sm">
+                            <div className="w-[35%] bg-gray-50 p-2 flex items-center justify-between text-[13px] font-bold text-gray-600 border-r border-gray-200">
+                                <span>Requisition Deadline</span><span>:</span>
+                            </div>
+                            <div className="w-[65%] p-1.5">
+                                <input
+                                    type="date"
+                                    {...register('date_deadline')}
+                                    className={`w-full px-2 py-1 text-[13px] border rounded outline-none ${errors.date_deadline ? 'border-red-500' : 'border-gray-300'}`}
+                                    disabled={isSubmitting || isViewMode}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -301,57 +355,6 @@ const PurchaseRequisitionForm: React.FC<PurchaseRequisitionFormProps> = ({
                 </div>
             </div>
 
-            {/* Bottom Actions */}
-            <div className="flex items-center gap-2 pt-4">
-                {!isViewMode && (
-                    <button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className="flex items-center gap-2 px-4 py-2 bg-[#22c55e] text-white text-[13px] font-medium rounded hover:bg-[#16a34a] transition-colors disabled:opacity-50"
-                    >
-                        <i className="fas fa-save"></i> {isSubmitting ? 'Menyimpan...' : 'Save'}
-                    </button>
-                )}
-
-                {isViewMode ? (
-                    <>
-                        {initialData?.status_pr === 'DRAFT' && (
-                            <>
-                                <button
-                                    type="button"
-                                    onClick={onEdit}
-                                    className="flex items-center gap-2 px-4 py-2 bg-[#0ea5e9] text-white text-[13px] font-medium rounded hover:bg-[#0284c7] transition-colors"
-                                >
-                                    <i className="fas fa-edit"></i> Edit
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={onConfirm}
-                                    className="flex items-center gap-2 px-4 py-2 bg-[#22c55e] text-white text-[13px] font-medium rounded hover:bg-[#16a34a] transition-colors"
-                                >
-                                    <i className="fas fa-check"></i> Confirm
-                                </button>
-                            </>
-                        )}
-                        <button
-                            type="button"
-                            onClick={onCancel || (() => navigate('/purchaserequisitions'))}
-                            className="flex items-center gap-2 px-4 py-2 bg-[#f59e0b] text-white text-[13px] font-medium rounded hover:bg-[#d97706] transition-colors"
-                        >
-                            <i className="fas fa-undo"></i> Kembali
-                        </button>
-                    </>
-                ) : (
-                    <button
-                        type="button"
-                        onClick={onCancel || (() => navigate('/purchaserequisitions'))}
-                        disabled={isSubmitting}
-                        className="flex items-center gap-2 px-4 py-2 bg-[#f59e0b] text-white text-[13px] font-medium rounded hover:bg-[#d97706] transition-colors disabled:opacity-50"
-                    >
-                        <i className="fas fa-undo"></i> Discard
-                    </button>
-                )}
-            </div>
         </form>
     );
 };
