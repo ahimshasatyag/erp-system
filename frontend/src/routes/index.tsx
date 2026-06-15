@@ -90,6 +90,11 @@ import { PoListPage } from '../modules/po/pages/PoListPage'
 import { PoAddPage } from '../modules/po/pages/PoAddPage'
 import { PoEditPage } from '../modules/po/pages/PoEditPage'
 
+// Incoming Shipment Pages
+import IncomingListPage from '../modules/incshipment/pages/IncomingListPage'
+import IncomingEditPage from '../modules/incshipment/pages/IncomingEditPage'
+import IncomingPrintBarcodePage from '../modules/incshipment/pages/IncomingPrintBarcodePage'
+
 export default function AppRouter() {
     return (
         <BrowserRouter>
@@ -192,6 +197,11 @@ export default function AppRouter() {
                                     <Route path="/po" element={<PoListPage />} />
                                     <Route path="/po/add" element={<PoAddPage />} />
                                     <Route path="/po/edit/:id" element={<PoEditPage />} />
+
+                                    {/* Incoming Shipment Routes */}
+                                    <Route path="/incshipment" element={<IncomingListPage />} />
+                                    <Route path="/incshipment/:id" element={<IncomingEditPage />} />
+                                    <Route path="/incshipment/:id/print-barcode" element={<IncomingPrintBarcodePage />} />
 
                                     {/* Product Routes */}
                                     <Route path="/product" element={<ProductListPage />} />

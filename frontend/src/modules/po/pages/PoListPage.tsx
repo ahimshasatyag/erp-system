@@ -15,9 +15,9 @@ export const PoListPage: React.FC = () => {
     });
 
     const { data: menuInfo } = useQuery({
-        queryKey: ["menu", "40103"], // Assuming 40103 is for PO, or fallback
+        queryKey: ["menu", "10804"], 
         queryFn: async () => {
-            const res = await api.get(`/menus/40103`);
+            const res = await api.get(`/menus/10804`);
             return res.data;
         },
     });

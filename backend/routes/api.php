@@ -105,6 +105,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/quotations-ap/get-lokasi', [\App\Http\Controllers\API\quotationsap\QuotationApController::class, 'getLokasi']);
     Route::apiResource('quotations-ap', \App\Http\Controllers\API\quotationsap\QuotationApController::class);
 
+    // Incoming Shipment
+    Route::prefix('incshipment')->group(function () {
+        Route::get('/', [App\Http\Controllers\API\incshipment\IncomingController::class, 'index']);
+        Route::get('/{id}', [App\Http\Controllers\API\incshipment\IncomingController::class, 'show']);
+        Route::post('/{id}/receive', [App\Http\Controllers\API\incshipment\IncomingController::class, 'receive']);
+        Route::post('/{id}/assign-sn', [App\Http\Controllers\API\incshipment\IncomingController::class, 'assignSn']);
+        Route::post('/{id}/print-barcode', [App\Http\Controllers\API\incshipment\IncomingController::class, 'printBarcode']);
+    });
+
     // Purchase Order (PO) Module
     Route::post('/po/confirm', [\App\Http\Controllers\API\po\PoController::class, 'confirm']);
     Route::get('/po/master-data', [\App\Http\Controllers\API\po\PoController::class, 'getMasterData']);

@@ -354,6 +354,22 @@ export default function Breadcrumb() {
       steps.push({ label: 'Purchase Order', path: '/po' });
       steps.push({ label: `Detail ${displayName}` });
     }
+    // Incoming Shipment List
+    else if (pathname === '/incshipment') {
+      steps.push({ label: 'Incoming Shipments' });
+    }
+    // Incoming Shipment Edit
+    else if (pathname.startsWith('/incshipment/')) {
+      const parts = pathname.split('/');
+      const id = parts[2];
+      const action = parts[3];
+      steps.push({ label: 'Incoming Shipments', path: '/incshipment' });
+      if (action === 'print-barcode') {
+        steps.push({ label: `Print Barcode ${id}` });
+      } else {
+        steps.push({ label: `Detail ${id}` });
+      }
+    }
     // Dynamic Fallback
     else {
       const segments = pathname.split('/').filter(Boolean)
