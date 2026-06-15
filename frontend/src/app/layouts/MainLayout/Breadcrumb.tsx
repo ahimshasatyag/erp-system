@@ -337,6 +337,23 @@ export default function Breadcrumb() {
       steps.push({ label: 'Quotation', path: '/quotationsap' });
       steps.push({ label: isViewMode ? `Detail ${displayName}` : `Edit ${displayName}` });
     }
+    // Purchase Order List
+    else if (pathname === '/po') {
+      steps.push({ label: 'Purchase Order' });
+    }
+    // Purchase Order Add
+    else if (pathname === '/po/add') {
+      steps.push({ label: 'Purchase Order', path: '/po' });
+      steps.push({ label: 'Tambah' });
+    }
+    // Purchase Order Edit Route
+    else if (pathname.startsWith('/po/edit/')) {
+      const id = pathname.split('/')[3];
+      const state = location.state as any;
+      const displayName = state?.name || id;
+      steps.push({ label: 'Purchase Order', path: '/po' });
+      steps.push({ label: `Detail ${displayName}` });
+    }
     // Dynamic Fallback
     else {
       const segments = pathname.split('/').filter(Boolean)

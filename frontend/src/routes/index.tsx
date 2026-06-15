@@ -85,6 +85,11 @@ import QuotationApListPage from '../modules/quotationsap/pages/QuotationApListPa
 import QuotationApAddPage from '../modules/quotationsap/pages/QuotationApAddPage'
 import QuotationApEditPage from '../modules/quotationsap/pages/QuotationApEditPage'
 
+// Purchase Order Pages
+import { PoListPage } from '../modules/po/pages/PoListPage'
+import { PoAddPage } from '../modules/po/pages/PoAddPage'
+import { PoEditPage } from '../modules/po/pages/PoEditPage'
+
 export default function AppRouter() {
     return (
         <BrowserRouter>
@@ -182,6 +187,11 @@ export default function AppRouter() {
                                     <Route path="/quotationsap" element={<QuotationApListPage />} />
                                     <Route path="/quotationsap/create" element={<QuotationApAddPage />} />
                                     <Route path="/quotationsap/:id/edit" element={<QuotationApEditPage />} />
+
+                                    {/* Purchase Order Routes */}
+                                    <Route path="/po" element={<PoListPage />} />
+                                    <Route path="/po/add" element={<PoAddPage />} />
+                                    <Route path="/po/edit/:id" element={<PoEditPage />} />
 
                                     {/* Product Routes */}
                                     <Route path="/product" element={<ProductListPage />} />

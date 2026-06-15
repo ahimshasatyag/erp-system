@@ -104,4 +104,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/quotations-ap/get-product-detail', [\App\Http\Controllers\API\quotationsap\QuotationApController::class, 'getProductDetail']);
     Route::post('/quotations-ap/get-lokasi', [\App\Http\Controllers\API\quotationsap\QuotationApController::class, 'getLokasi']);
     Route::apiResource('quotations-ap', \App\Http\Controllers\API\quotationsap\QuotationApController::class);
+
+    // Purchase Order (PO) Module
+    Route::post('/po/confirm', [\App\Http\Controllers\API\po\PoController::class, 'confirm']);
+    Route::get('/po/master-data', [\App\Http\Controllers\API\po\PoController::class, 'getMasterData']);
+    Route::apiResource('po', \App\Http\Controllers\API\po\PoController::class);
 });
