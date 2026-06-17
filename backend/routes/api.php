@@ -77,6 +77,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/product-price/detail-barang', [\App\Http\Controllers\API\productprice\ProductPriceController::class, 'detailBarang']);
     Route::apiResource('product-price', \App\Http\Controllers\API\productprice\ProductPriceController::class);
 
+    // Product Price Marketing Module
+    Route::prefix('product-price-mkt')->group(function () {
+        Route::get('/', [\App\Http\Controllers\API\productpricemkt\ProductPriceMktController::class, 'index']);
+        Route::post('/cart', [\App\Http\Controllers\API\productpricemkt\ProductPriceMktController::class, 'addToCart']);
+        Route::get('/{id}', [\App\Http\Controllers\API\productpricemkt\ProductPriceMktController::class, 'show']);
+        Route::get('/{id}/pdf', [\App\Http\Controllers\API\productpricemkt\ProductPriceMktController::class, 'getPdf']);
+    });
+
     // Product Category Module
     Route::apiResource('product-category', ProductCategoryController::class);
     Route::apiResource('product-sub-category', \App\Http\Controllers\API\productsubcategory\ProductSubCategoryController::class);

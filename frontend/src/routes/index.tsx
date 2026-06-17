@@ -102,6 +102,11 @@ import ProductPriceEditPage from '../modules/productprice/pages/ProductPriceEdit
 import ProductPriceEditMultiPage from '../modules/productprice/pages/ProductPriceEditMultiPage'
 import ProductPriceUploadPage from '../modules/productprice/pages/ProductPriceUploadPage'
 
+// Product Price Mkt Pages
+import ProductPriceMktListPage from '../modules/productpricemkt/pages/ProductPriceMktListPage'
+import ProductPriceMktViewPage from '../modules/productpricemkt/pages/ProductPriceMktViewPage'
+import ProductPriceMktPdfPage from '../modules/productpricemkt/pages/ProductPriceMktPdfPage'
+
 export default function AppRouter() {
     return (
         <BrowserRouter>
@@ -223,8 +228,22 @@ export default function AppRouter() {
                                     <Route path="/productprice/edit/:id" element={<ProductPriceEditPage />} />
                                     <Route path="/productprice/edit-multi" element={<ProductPriceEditMultiPage />} />
                                     <Route path="/productprice/upload" element={<ProductPriceUploadPage />} />
+
+                                    {/* Product Price Mkt Routes */}
+                                    <Route path="/productpricemkt" element={<ProductPriceMktListPage />} />
+                                    <Route path="/productpricemkt/view/:id" element={<ProductPriceMktViewPage />} />
                                 </Routes>
                             </MainLayout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                {/* PDF Print Routes (Without MainLayout) */}
+                <Route
+                    path="/productpricemkt/pdf/:id"
+                    element={
+                        <ProtectedRoute>
+                            <ProductPriceMktPdfPage />
                         </ProtectedRoute>
                     }
                 />

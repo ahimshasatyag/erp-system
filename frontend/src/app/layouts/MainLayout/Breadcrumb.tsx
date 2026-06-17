@@ -402,6 +402,18 @@ export default function Breadcrumb() {
       steps.push({ label: 'Product Price', path: '/productprice' });
       steps.push({ label: `${isEditing ? 'Edit' : 'Detail'} ${displayCode}` });
     }
+    // Product Price Mkt List
+    else if (pathname === '/productpricemkt') {
+      steps.push({ label: 'Product Price Marketing' });
+    }
+    // Product Price Mkt View Route
+    else if (pathname.startsWith('/productpricemkt/view/')) {
+      const id = pathname.split('/')[3];
+      const state = location.state as any;
+      const displayName = state?.code || id;
+      steps.push({ label: 'Product Price Marketing', path: '/productpricemkt' });
+      steps.push({ label: `Detail Product ${displayName}` });
+    }
     // Dynamic Fallback
     else {
       const segments = pathname.split('/').filter(Boolean)
