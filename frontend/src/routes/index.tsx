@@ -95,6 +95,13 @@ import IncomingListPage from '../modules/incshipment/pages/IncomingListPage'
 import IncomingEditPage from '../modules/incshipment/pages/IncomingEditPage'
 import IncomingPrintBarcodePage from '../modules/incshipment/pages/IncomingPrintBarcodePage'
 
+// Product Price Pages
+import ProductPriceListPage from '../modules/productprice/pages/ProductPriceListPage'
+import ProductPriceAddPage from '../modules/productprice/pages/ProductPriceAddPage'
+import ProductPriceEditPage from '../modules/productprice/pages/ProductPriceEditPage'
+import ProductPriceEditMultiPage from '../modules/productprice/pages/ProductPriceEditMultiPage'
+import ProductPriceUploadPage from '../modules/productprice/pages/ProductPriceUploadPage'
+
 export default function AppRouter() {
     return (
         <BrowserRouter>
@@ -209,6 +216,13 @@ export default function AppRouter() {
                                     <Route path="/product/edit/:id" element={<ProductEditPage />} />
                                     <Route path="/product/duplicate/:id" element={<ProductEditPage />} />
                                     <Route path="/product/upload" element={<ProductUploadPage />} />
+
+                                    {/* Product Price Routes */}
+                                    <Route path="/productprice" element={<ProductPriceListPage />} />
+                                    <Route path="/productprice/create" element={<ProductPriceAddPage />} />
+                                    <Route path="/productprice/edit/:id" element={<ProductPriceEditPage />} />
+                                    <Route path="/productprice/edit-multi" element={<ProductPriceEditMultiPage />} />
+                                    <Route path="/productprice/upload" element={<ProductPriceUploadPage />} />
                                 </Routes>
                             </MainLayout>
                         </ProtectedRoute>

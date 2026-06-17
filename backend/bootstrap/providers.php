@@ -19,4 +19,5 @@ return [
     App\Providers\suppliers\SupplierServiceProvider::class,
     App\Providers\purchaserequisitions\PurchaseRequisitionServiceProvider::class,
     App\Providers\quotationsap\QuotationApServiceProvider::class,
+    App\Providers\productprice\ProductPriceServiceProvider::class,
 ];

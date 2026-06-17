@@ -370,6 +370,38 @@ export default function Breadcrumb() {
         steps.push({ label: `Detail ${id}` });
       }
     }
+    // Product Price List
+    else if (pathname === '/productprice') {
+      steps.push({ label: 'Product Price' });
+    }
+    // Product Price Add
+    else if (pathname === '/productprice/create') {
+      steps.push({ label: 'Product Price', path: '/productprice' });
+      steps.push({ label: 'Tambah' });
+    }
+    // Product Price Upload
+    else if (pathname === '/productprice/upload') {
+      steps.push({ label: 'Product Price', path: '/productprice' });
+      steps.push({ label: 'Upload' });
+    }
+    // Product Price Edit Multi
+    else if (pathname === '/productprice/edit-multi') {
+      steps.push({ label: 'Product Price', path: '/productprice' });
+      steps.push({ label: 'Edit Multiple' });
+    }
+    // Product Price Edit Route
+    else if (pathname.startsWith('/productprice/edit/')) {
+      const id = pathname.split('/')[3];
+      const state = location.state as any;
+      let displayCode = state?.code || id;
+      if (displayCode) {
+        displayCode = displayCode.replace(/\./g, '/');
+      }
+      const mode = new URLSearchParams(location.search).get('mode');
+      const isEditing = mode === 'edit';
+      steps.push({ label: 'Product Price', path: '/productprice' });
+      steps.push({ label: `${isEditing ? 'Edit' : 'Detail'} ${displayCode}` });
+    }
     // Dynamic Fallback
     else {
       const segments = pathname.split('/').filter(Boolean)

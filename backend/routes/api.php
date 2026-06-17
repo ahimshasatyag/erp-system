@@ -72,6 +72,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/products/ganti-status', [\App\Http\Controllers\API\products\ProductController::class, 'gantiStatus']);
     Route::apiResource('products', \App\Http\Controllers\API\products\ProductController::class);
 
+    // Product Price Module
+    Route::get('/product-price/available-products', [\App\Http\Controllers\API\productprice\ProductPriceController::class, 'availableProducts']);
+    Route::post('/product-price/detail-barang', [\App\Http\Controllers\API\productprice\ProductPriceController::class, 'detailBarang']);
+    Route::apiResource('product-price', \App\Http\Controllers\API\productprice\ProductPriceController::class);
+
     // Product Category Module
     Route::apiResource('product-category', ProductCategoryController::class);
     Route::apiResource('product-sub-category', \App\Http\Controllers\API\productsubcategory\ProductSubCategoryController::class);
